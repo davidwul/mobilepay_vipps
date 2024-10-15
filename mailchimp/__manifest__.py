@@ -1,6 +1,6 @@
 {
     "name": "MailChimp Connector",
-    "version": "14.0.1.0.0",
+    "version": "16.0.1.0.0",
     "category": "Marketing",
     "summary": "Integrate & Manage MailChimp Operations from Odoo",
     "depends": [
