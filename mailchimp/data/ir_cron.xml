@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="export_members" model="ir.cron">
+        <field name="name">Mailchimp: Export Contacts to Audience</field>
+        <field name="model_id" ref="mailchimp.model_mailing_list"/>
+        <field name="state">code</field>
+        <field name="code">
+mailchimp_lists = model.search([('mailchimp_list_id', '!=', False), ('mailchimp_auto_export_member', '=', True)])
+mailchimp_lists.mailchimp_export_members()
+        </field>
+        <field name='interval_number'>4</field>
+        <field name='interval_type'>hours</field>
+        <field name="numbercall">-1</field>
+    </record>
+    <record id="fetch_campaigns_cron" model="ir.cron">
+        <field name="name">Mailchimp: Fetch Campaigns</field>
+        <field name="model_id" ref="mailchimp.model_mailchimp_account"/>
+        <field name="state">code</field>
+        <field name="code">
+for account in model.search([]):
+    account.fetch_campaigns()
+mailings = model.env["mailing.mailing"].search([('mailchimp_id', '!=', False), ('state', '=', 'done')], limit=3)
+for mailing in mailings:
+    mailing.action_refresh_mailchimp()
+        </field>
+        <field name='interval_number'>1</field>
+        <field name='interval_type'>days</field>
+        <field name="numbercall">-1</field>
+    </record>
+</odoo>

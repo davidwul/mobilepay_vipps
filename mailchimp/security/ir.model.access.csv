@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mailchimp_account_user,mailchimp.account.user,mailchimp.model_mailchimp_account,base.group_user,1,0,0,0
+access_mailchimp_account_admin,mailchimp.account.admin,mailchimp.model_mailchimp_account,mass_mailing.group_mass_mailing_user,1,1,1,1
+access_mailchimp_merge_field_user,mailchimp.merge.field.user,mailchimp.model_mailchimp_merge_field,base.group_user,1,0,0,0
+access_mailchimp_merge_field_admin,mailchimp.merge.field.admin,mailchimp.model_mailchimp_merge_field,mass_mailing.group_mass_mailing_user,1,1,1,1
+access_mailchimp_template_admin,mailchimp.template.admin,mailchimp.model_mailchimp_template,mass_mailing.group_mass_mailing_user,1,1,1,1

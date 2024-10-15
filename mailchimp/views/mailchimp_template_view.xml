@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_mailchimp_templates_form" model="ir.ui.view">
+            <field name="name">mailchimp.templates.form</field>
+            <field name="model">mailchimp.template</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_button_box">
+                            <button name="action_open_mailchimp_backend" type="object" icon="fa-external-link" class="oe_stat_button" string="Open in MailChimp"/>
+                        </div>
+                        <div class="oe_title text-center">
+                            <h1>
+                                <field name="name" placeholder="Template Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="create_date"/>
+                                <field name="created_by"/>
+                                <field name="account_id"/>
+                                <field name="type"/>
+                                <field name="category"/>
+                            </group>
+                            <group>
+                                <field name="date_edited"/>
+                                <field name="edited_by"/>
+                                <field name="last_fetch"/>
+                            </group>
+                        </group>
+                        <div class="mx-auto text-center">
+                            <field name="thumbnail" widget="image_url"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_mailchimp_templates_tree" model="ir.ui.view">
+            <field name="name">mailchimp.template.tree</field>
+            <field name="model">mailchimp.template</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="category"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_mailchimp_templates" model="ir.actions.act_window">
+            <field name="name">MailChimp Templates</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mailchimp.template</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Templates" parent="menu_mailchimp_root"
+                  action="action_mailchimp_templates" id="menu_action_mailchimp_templates"
+                  sequence="30"/>
+
+    </data>
+</odoo>
