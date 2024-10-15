@@ -21,7 +21,7 @@
         "security/ir.model.access.csv",
     ],
     "author": "CompassionCH",
-    "website": "https://compassion.ch",
+    "website": "https://github.com/CompassionCH/paid-addons",
     "license": "AGPL-3",
     "demo": [],
     "auto_install": False,

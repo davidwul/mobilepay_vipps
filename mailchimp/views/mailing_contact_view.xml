@@ -1,31 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_mailing_contact_form" model="ir.ui.view">
         <field name="name">mailing.contact.mailchimp.form</field>
         <field name="model">mailing.contact</field>
-        <field name="inherit_id" ref="mass_mailing.mailing_contact_view_form"/>
+        <field name="inherit_id" ref="mass_mailing.mailing_contact_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('oe_title')]" position="before">
-                <field name="active" invisible="1"/>
-                <field name="mailchimp_url" invisible="1"/>
-                <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                <div class="oe_button_box" attrs="{'invisible': [('mailchimp_url', '=', False)]}">
-                    <button name="action_open_mailchimp_backend" type="object" icon="fa-external-link" class="oe_stat_button" string="Open in MailChimp"/>
+                <field name="active" invisible="1" />
+                <field name="mailchimp_url" invisible="1" />
+                <widget
+          name="web_ribbon"
+          title="Archived"
+          bg_color="bg-danger"
+          attrs="{'invisible': [('active', '=', True)]}"
+        />
+                <div
+          class="oe_button_box"
+          attrs="{'invisible': [('mailchimp_url', '=', False)]}"
+        >
+                    <button
+            name="action_open_mailchimp_backend"
+            type="object"
+            icon="fa-external-link"
+            class="oe_stat_button"
+            string="Open in MailChimp"
+          />
                 </div>
             </xpath>
             <field name="message_bounce" position="after">
-                <field name="cleaned"/>
+                <field name="cleaned" />
             </field>
             <xpath expr="//group[1]">
-                <group groups="base.group_system" attrs="{'invisible': [('mailchimp_contact_id', '=', False)]}">
-                    <field name="eligible_for_mailchimp_fetch"/>
-                    <field name="eligible_for_mailchimp_export"/>
-                    <field name="mailchimp_contact_id"/>
+                <group
+          groups="base.group_system"
+          attrs="{'invisible': [('mailchimp_contact_id', '=', False)]}"
+        >
+                    <field name="eligible_for_mailchimp_fetch" />
+                    <field name="eligible_for_mailchimp_export" />
+                    <field name="mailchimp_contact_id" />
                 </group>
-                <group groups="base.group_system" attrs="{'invisible': [('mailchimp_contact_id', '=', False)]}">
-                    <field name="mailchimp_last_fetch"/>
-                    <field name="mailchimp_last_export"/>
-                    <field name="write_date" string="Last odoo update"/>
+                <group
+          groups="base.group_system"
+          attrs="{'invisible': [('mailchimp_contact_id', '=', False)]}"
+        >
+                    <field name="mailchimp_last_fetch" />
+                    <field name="mailchimp_last_export" />
+                    <field name="write_date" string="Last odoo update" />
                 </group>
             </xpath>
         </field>
@@ -33,15 +53,15 @@
 
     <record model="ir.actions.server" id="mailchimp_export_contact_action">
         <field name="name">Export to MailChimp</field>
-        <field name="model_id" ref="mailchimp.model_mailing_contact"/>
-        <field name="binding_model_id" ref="mailchimp.model_mailing_contact"/>
+        <field name="model_id" ref="mailchimp.model_mailing_contact" />
+        <field name="binding_model_id" ref="mailchimp.model_mailing_contact" />
         <field name="state">code</field>
         <field name="code">records.mailchimp_export()</field>
     </record>
     <record model="ir.actions.server" id="mailchimp_update_contact_action">
         <field name="name">Fetch from MailChimp</field>
-        <field name="model_id" ref="mailchimp.model_mailing_contact"/>
-        <field name="binding_model_id" ref="mailchimp.model_mailing_contact"/>
+        <field name="model_id" ref="mailchimp.model_mailing_contact" />
+        <field name="binding_model_id" ref="mailchimp.model_mailing_contact" />
         <field name="state">code</field>
         <field name="code">records.mailchimp_fetch()</field>
     </record>

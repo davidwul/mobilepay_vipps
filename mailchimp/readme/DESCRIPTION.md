@@ -1,4 +1,5 @@
-Synchronize your mailing lists and marketing data between MailChimp and Odoo
+Synchronize your mailing lists and marketing data between MailChimp and
+Odoo
 
 - Contacts import and export, including tags
 - Merge Fields data export

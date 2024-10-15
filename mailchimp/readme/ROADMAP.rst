@@ -1,5 +1,0 @@
-- Template editing from Odoo
-- Segments editing and contacts selection from Odoo
-- Implement `Interests` synchronization (or groups)
-- Manage `Signup Forms` from Odoo
-- Manage `Surveys` from Odoo

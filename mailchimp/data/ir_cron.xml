@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="export_members" model="ir.cron">
         <field name="name">Mailchimp: Export Contacts to Audience</field>
-        <field name="model_id" ref="mailchimp.model_mailing_list"/>
+        <field name="model_id" ref="mailchimp.model_mailing_list" />
         <field name="state">code</field>
         <field name="code">
 mailchimp_lists = model.search([('mailchimp_list_id', '!=', False), ('mailchimp_auto_export_member', '=', True)])
@@ -14,7 +14,7 @@ mailchimp_lists.mailchimp_export_members()
     </record>
     <record id="fetch_campaigns_cron" model="ir.cron">
         <field name="name">Mailchimp: Fetch Campaigns</field>
-        <field name="model_id" ref="mailchimp.model_mailchimp_account"/>
+        <field name="model_id" ref="mailchimp.model_mailchimp_account" />
         <field name="state">code</field>
         <field name="code">
 for account in model.search([]):

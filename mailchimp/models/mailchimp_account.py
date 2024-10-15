@@ -1,5 +1,6 @@
-import mailchimp_marketing
 import logging
+
+import mailchimp_marketing
 from mailchimp_marketing.api_client import ApiClientError
 
 from odoo import _, fields, models
@@ -98,7 +99,9 @@ class MailChimpAccounts(models.Model):
                 self.env.cr.commit()
         except ApiClientError as error:
             _logger.error("Error fetching campaigns: %s", error.text)
-        pending = mailings.search([("mailchimp_id", "!=", False), ("state", "not in", ["done", "cancel"])])
+        pending = mailings.search(
+            [("mailchimp_id", "!=", False), ("state", "not in", ["done", "cancel"])]
+        )
         pending.multi_refresh_mailchimp()
         mailings |= pending
         return mailings
