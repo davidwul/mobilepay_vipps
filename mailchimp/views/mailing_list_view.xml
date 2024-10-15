@@ -9,11 +9,11 @@
         ref="mass_mailing.mailing_list_view_kanban"
       />
             <field name="arch" type="xml">
-                <field name="contact_nbr" position="after">
+                <field name="contact_count" position="after">
                     <field name="mailchimp_list_id" />
                 </field>
                 <xpath
-          expr="//div[hasclass('o_primary')]/span"
+          expr="//div[hasclass('oe_kanban_content')]/div[last()]"
           position="after"
         >
                     <t t-if="record.mailchimp_list_id.raw_value">
@@ -41,23 +41,21 @@
               name="mailchimp_fetch_members"
               type="object"
               string="Fetch Members from MailChimp"
-              class="oe_highlight"
-              attrs="{'invisible': [('mailchimp_list_id', '=', False)]}"
+              class="btn-primary"
+              invisible="not mailchimp_list_id"
             />
                         <button
               name="mailchimp_update_merge_fields"
               type="object"
               string="Update Merge Fields"
-              class="oe_highlight"
-              attrs="{'invisible': [('mailchimp_list_id', '=', False)]}"
+              class="btn-primary"
+              invisible="not mailchimp_list_id"
             />
                     </header>
                 </sheet>
                 <xpath expr="//group[last()]" position="after">
                     <field name="mailchimp_list_id" invisible="1" />
-                    <notebook
-            attrs="{'invisible': [('mailchimp_list_id', '=', False)]}"
-          >
+                    <notebook invisible="not mailchimp_list_id">
                         <page string="Merge Fields">
                             <field name="mailchimp_merge_field_ids">
                                 <tree editable="bottom" create="0">
@@ -67,8 +65,8 @@
                   />
                                     <field name="name" />
                                     <field name="tag" />
-                                    <field name="type" />
-                                    <field name="date_format" />
+                                    <field name="type" readonly="1" />
+                                    <field name="date_format" readonly="1" />
                                     <field name="required" />
                                     <field name="public" />
                                     <field

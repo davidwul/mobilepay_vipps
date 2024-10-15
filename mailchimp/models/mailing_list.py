@@ -13,8 +13,8 @@ _logger = logging.getLogger(__name__)
 class MassMailingList(models.Model):
     _inherit = "mailing.list"
 
-    mailchimp_list_id = fields.Char("Mailchimp List ID", copy=False, readonly=True)
-    mailchimp_web_id = fields.Integer("Mailchimp Web ID", copy=False, readonly=True)
+    mailchimp_list_id = fields.Char("Mailchimp List ID", copy=False)
+    mailchimp_web_id = fields.Integer("Mailchimp Web ID", copy=False)
     mailchimp_account_id = fields.Many2one(
         "mailchimp.account", "MailChimp Account", copy=False
     )

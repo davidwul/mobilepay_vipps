@@ -5,9 +5,9 @@
             <field name="name">mailchimp.templates.form</field>
             <field name="model">mailchimp.template</field>
             <field name="arch" type="xml">
-                <form>
+                <form edit="False">
                     <sheet>
-                        <div class="oe_button_box">
+                        <div name="button_box">
                             <button
                 name="action_open_mailchimp_backend"
                 type="object"

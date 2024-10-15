@@ -4,7 +4,7 @@ from odoo import api, fields, models
 class ResPartnerCategory(models.Model):
     _inherit = "res.partner.category"
 
-    mailchimp_id = fields.Char("Mailchimp Id", copy=False, readonly=True, index=True)
+    mailchimp_id = fields.Char("Mailchimp Id", copy=False, index=True)
 
     _sql_constraints = [
         ("mailchimp_id_uniq", "unique(mailchimp_id)", "MailChimp ID must be unique!")

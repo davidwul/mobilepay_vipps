@@ -1,11 +1,10 @@
 {
     "name": "MailChimp Connector",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Marketing",
     "summary": "Integrate & Manage MailChimp Operations from Odoo",
     "depends": [
         "mass_mailing",
-        "web_notify",
         "queue_job",
     ],
     "development_status": "Production/Stable",
@@ -20,7 +19,7 @@
         "views/mass_mailing_view.xml",
         "security/ir.model.access.csv",
     ],
-    "author": "CompassionCH",
+    "author": "Compassion Switzerland",
     "website": "https://github.com/CompassionCH/paid-addons",
     "license": "AGPL-3",
     "demo": [],

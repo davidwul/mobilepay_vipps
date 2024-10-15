@@ -13,20 +13,20 @@
                     <div
             class="alert alert-danger text-center"
             role="alert"
-            attrs="{'invisible': ['|', ('mailchimp_id', '=', False), ('state', '!=', 'draft')]}"
+            invisible="state != 'draft' or not mailchimp_id"
           >
                         <p>This is a MailChimp campaign. <strong
               >All changes made here won't have any effect</strong>. Please go on MailChimp if you want to edit it.</p>
                     </div>
                 </header>
-                <div class="oe_button_box">
+                <div name="button_box">
                     <button
             name="action_refresh_mailchimp"
             type="object"
             icon="fa-refresh"
             class="oe_stat_button"
             string="Refresh (MailChimp)"
-            attrs="{'invisible': [('mailchimp_id', '=', False)]}"
+            invisible="not mailchimp_id"
           />
                     <button
             name="action_open_mailchimp_backend"
@@ -34,33 +34,29 @@
             icon="fa-external-link"
             class="oe_stat_button"
             string="Open in MailChimp"
-            attrs="{'invisible': [('mailchimp_id', '=', False)]}"
+            invisible="not mailchimp_id"
           />
                 </div>
                 <!-- Replace recipients for MailChimp mailings -->
                 <div name="mailing_model_id_container" position="attributes">
-                    <attribute
-            name="attrs"
-          >{'invisible': [('mailchimp_id', '!=', False)]}</attribute>
+                    <attribute name="invisible">mailchimp_id</attribute>
                 </div>
                 <label for="mailing_model_id" position="attributes">
-                    <attribute
-            name="attrs"
-          >{'invisible': [('mailchimp_id', '!=', False)]}</attribute>
+                    <attribute name="invisible">mailchimp_id</attribute>
                 </label>
                 <field name="contact_list_ids" position="attributes">
                     <attribute
-            name="attrs"
-          >{'readonly': [('state', 'in', ('sending', 'done'))]}</attribute>
+            name="readonly"
+          >state in ('sending', 'done')</attribute>
                 </field>
                 <div name="mailing_model_id_container" position="after">
                     <label
             for="mailchimp_recipients"
-            attrs="{'invisible': [('mailchimp_id', '=', False)]}"
+            invisible="not mailchimp_id"
           />
                     <div
             name="mailchimp_recipients_container"
-            attrs="{'invisible': [('mailchimp_id', '=', False)]}"
+            invisible="not mailchimp_id"
           >
                         <div class="d-flex">
                             <p
@@ -75,25 +71,24 @@
                     </div>
                 </div>
                 <!-- Add MailChimp fields -->
-                <page
-          name="dynamic_placeholder_generator"
-          position="attributes"
-        >
-                    <attribute
-            name="attrs"
-          >{'invisible': [('mailchimp_id', '!=', False)]}</attribute>
-                </page>
                 <page name="settings" position="after">
                     <page
             name="mailchimp"
             string="MailChimp"
-            attrs="{'invisible': [('mailchimp_id', '=', False)]}"
+            invisible="not mailchimp_id"
           >
                         <group>
                             <field name="mailchimp_id" invisible="1" />
-                            <field name="last_report_import_date" />
-                            <field name="mailchimp_archive_url" widget="url" />
-                            <field name="mailchimp_template_id" />
+                            <field
+                name="last_report_import_date"
+                readonly="1"
+              />
+                            <field
+                name="mailchimp_archive_url"
+                widget="url"
+                readonly="1"
+              />
+                            <field name="mailchimp_template_id" readonly="1" />
                             <field name="sent_date" />
                         </group>
                     </page>

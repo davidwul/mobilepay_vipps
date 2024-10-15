@@ -13,7 +13,7 @@ class MailChimpMergeField(models.Model):
         required=True,
         copy=False,
     )
-    merge_id = fields.Integer("Merge ID", readonly=True, copy=False)
+    merge_id = fields.Integer("Merge ID", copy=False)
     tag = fields.Char(
         "Merge Field Tag",
         help="The tag used in Mailchimp campaigns and for the /members endpoint.",
@@ -32,9 +32,8 @@ class MailChimpMergeField(models.Model):
             ("imageurl", "ImageURL"),
             ("url", "URL"),
         ],
-        readonly=True,
     )
-    date_format = fields.Char("Date Format", readonly=True)
+    date_format = fields.Char("Date Format")
     required = fields.Boolean(
         "Required?", copy=False, help="Merge field is required or not."
     )

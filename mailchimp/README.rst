@@ -125,7 +125,7 @@ Credits
 Authors
 -------
 
-* CompassionCH
+* Compassion Switzerland
 
 Contributors
 ------------

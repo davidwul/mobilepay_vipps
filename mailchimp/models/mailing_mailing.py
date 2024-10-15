@@ -29,20 +29,19 @@ class MassMailing(models.Model):
         "mailchimp.account",
         string="MailChimp Account",
     )
-    mailchimp_id = fields.Char("MailChimp ID", copy=False, readonly=True)
-    mailchimp_web_id = fields.Integer("MailChimp Web ID", copy=False, readonly=True)
+    mailchimp_id = fields.Char("MailChimp ID", copy=False)
+    mailchimp_web_id = fields.Integer("MailChimp Web ID", copy=False)
     mailchimp_url = fields.Char(compute="_compute_mailchimp_url")
     last_report_import_date = fields.Datetime("Last stats fetched", copy=False)
-    mailchimp_archive_url = fields.Char(readonly=True)
+    mailchimp_archive_url = fields.Char()
     mailchimp_template_id = fields.Many2one(
         "mailchimp.template",
         string="MailChimp Template",
     )
     mailchimp_recipients = fields.Html(
         help="Recipients selection description from MailChimp",
-        readonly=True,
     )
-    mailchimp_recipients_count = fields.Integer(readonly=True)
+    mailchimp_recipients_count = fields.Integer()
     state = fields.Selection(
         selection_add=[("cancel", "Cancelled")], ondelete={"cancel": "set default"}
     )
@@ -69,26 +68,6 @@ class MassMailing(models.Model):
         for mailing in self.filtered("mailchimp_id"):
             mailing.total = mailing.mailchimp_recipients_count
 
-    def write(self, values):
-        """
-        Prevent writing on MailChimp mailings.
-        @param values: values to write
-        @return: Warning in case of write on MailChimp mailing
-        """
-        fetch_date = len(values) == 1 and "last_report_import_date" in values
-        if (
-            self.filtered("mailchimp_id")
-            and not self.env.context.get("mailchimp_update")
-            and not fetch_date
-        ):
-            self.env.user.notify_danger(
-                _(
-                    "Some changes may not be taken into account on MailChimp mailings. "
-                    "Please modify it from MailChimp."
-                )
-            )
-        return super().write(values)
-
     def action_open_mailchimp_backend(self):
         self.ensure_one()
         return {
@@ -104,10 +83,15 @@ class MassMailing(models.Model):
         """
         for mailing in self:
             mailing.with_delay(channel="root.mailchimp").action_refresh_mailchimp()
-        self.env.user.notify_success(
-            _("MailChimp info is being refreshed in background.")
-        )
-        return True
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": ("MaiChimp Refresh"),
+                "message": _("MailChimp info is being refreshed in background."),
+                "type": "success",
+            },
+        }
 
     def action_refresh_mailchimp(self, offset=0, skip_basic_info=False):
         """

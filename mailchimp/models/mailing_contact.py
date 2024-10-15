@@ -19,8 +19,8 @@ MAILCHIMP_MEMBER_REQUIRED_FIELDS = [
 class MailingContact(models.Model):
     _inherit = "mailing.contact"
 
-    mailchimp_contact_id = fields.Char(copy=False, readonly=True, index=True)
-    mailchimp_web_id = fields.Char(copy=False, readonly=True)
+    mailchimp_contact_id = fields.Char(copy=False, index=True)
+    mailchimp_web_id = fields.Char(copy=False)
     mailchimp_last_fetch = fields.Datetime(
         readonly=True, copy=False, default=fields.Datetime.now
     )
@@ -29,9 +29,7 @@ class MailingContact(models.Model):
     )
     mailchimp_url = fields.Char(compute="_compute_mailchimp_url")
     active = fields.Boolean("Active", default=True)
-    cleaned = fields.Boolean(
-        "Cleaned", default=False, help="Email is invalid.", readonly=True
-    )
+    cleaned = fields.Boolean("Cleaned", default=False, help="Email is invalid.")
     eligible_for_mailchimp_export = fields.Boolean(
         compute="_compute_eligible_for_mailchimp_export"
     )
@@ -221,6 +219,7 @@ class MailingContact(models.Model):
                     if with_commit:
                         self.env.cr.rollback()
                 if with_commit:
+                    # pylint: disable=E8102
                     self.env.cr.commit()
         return True
 

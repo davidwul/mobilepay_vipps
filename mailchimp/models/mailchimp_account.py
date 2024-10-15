@@ -78,7 +78,9 @@ class MailChimpAccounts(models.Model):
         }
 
     def fetch_campaigns(self):
-        """Retrieve new campaigns from Mailchimp and update all campaigns not yet sent."""
+        """
+        Retrieve new campaigns from Mailchimp and update all campaigns not yet sent.
+        """
         self.ensure_one()
         mailings = self.env["mailing.mailing"]
         try:
@@ -96,6 +98,7 @@ class MailChimpAccounts(models.Model):
                 campaign_date = mailchimp_date_to_datetime(campaign.get("create_time"))
                 if campaign_date > self.last_campaign_fetch:
                     self.last_campaign_fetch = campaign_date
+                # pylint: disable=E8102
                 self.env.cr.commit()
         except ApiClientError as error:
             _logger.error("Error fetching campaigns: %s", error.text)

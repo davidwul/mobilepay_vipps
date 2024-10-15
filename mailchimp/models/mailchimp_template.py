@@ -17,33 +17,31 @@ class MailChimpTemplates(models.Model):
     _description = "MailChimp Template"
 
     name = fields.Char(
-        "Name", required=True, help="The name of the template.", readonly=True
+        "Name",
+        required=True,
+        help="The name of the template.",
     )
     account_id = fields.Many2one(
-        "mailchimp.account", string="Account", required=True, readonly=True
+        "mailchimp.account", string="Account", required=True, ondelete="cascade"
     )
-    template_id = fields.Integer(
-        "Template ID", copy=False, required=True, index=True, readonly=True
-    )
+    template_id = fields.Integer("Template ID", copy=False, required=True, index=True)
     type = fields.Selection(
         [("user", "User"), ("gallery", "Gallery"), ("base", "Base")],
         default="user",
         copy=False,
         help="The type of template (user, base, or gallery).",
-        readonly=True,
     )
     category = fields.Char(
         "Template Category",
         help="If available, the category the template is listed in.",
-        readonly=True,
     )
-    date_edited = fields.Datetime("Edited On", readonly=True)
-    created_by = fields.Char(readonly=True)
-    edited_by = fields.Char(readonly=True)
-    last_fetch = fields.Datetime("Last Fetched On", readonly=True)
-    active = fields.Boolean("Active", default=True, readonly=True)
-    thumbnail = fields.Char(readonly=True)
-    url = fields.Char(readonly=True)
+    date_edited = fields.Datetime("Edited On")
+    created_by = fields.Char()
+    edited_by = fields.Char()
+    last_fetch = fields.Datetime("Last Fetched On")
+    active = fields.Boolean("Active", default=True)
+    thumbnail = fields.Char()
+    url = fields.Char()
 
     _sql_constraints = [
         ("template_id_uniq", "unique(template_id)", "Template ID must be unique!"),
