@@ -56,7 +56,7 @@ class MailChimp(http.Controller):
             contact.mailchimp_fetch()
         elif request_type == RequestType.UNSUBSCRIBE.value:
             if contact and mailing_list:
-                subscription = contact.subscription_list_ids.filtered(
+                subscription = contact.subscription_ids.filtered(
                     lambda sub: sub.list_id.id == mailing_list.id
                 )
                 subscription.opt_out = True

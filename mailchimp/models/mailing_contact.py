@@ -161,7 +161,7 @@ class MailingContact(models.Model):
     def mailchimp_export(self, with_commit=False):
         _logger.info("Exporting %s contacts to MailChimp", len(self))
         for contact in self.filtered("eligible_for_mailchimp_export"):
-            for subscription in contact.subscription_list_ids.filtered(
+            for subscription in contact.subscription_ids.filtered(
                 "list_id.mailchimp_list_id"
             ):
                 mailing_list = subscription.list_id
@@ -238,7 +238,7 @@ class MailingContact(models.Model):
         mailing_list = self.env["mailing.list"].search(
             [("mailchimp_list_id", "=", list_id)]
         )
-        subscription = self.env["mailing.contact.subscription"].search(
+        subscription = self.env["mailing.subscription"].search(
             [
                 ("contact_id", "=", self.id),
                 ("list_id", "=", mailing_list.id),
@@ -254,7 +254,7 @@ class MailingContact(models.Model):
             "mailchimp_web_id": mailchimp_data.get("web_id"),
             "name": mailchimp_data.get("full_name"),
             "email": mailchimp_data.get("email_address"),
-            "subscription_list_ids": [(1, subscription.id, subscription_vals)]
+            "subscription_ids": [(1, subscription.id, subscription_vals)]
             if subscription
             else [(0, 0, subscription_vals)],
             "active": status != "archived",
