@@ -31,8 +31,7 @@ class MailingTrace(models.Model):
             "email": email,
             "model": contact._name if contact else mass_mailing._name,
             "res_id": contact.id if contact else mass_mailing.id,
-            "scheduled": mass_mailing.sent_date,
-            "sent": mass_mailing.sent_date,
+            "sent_datetime": mass_mailing.sent_date,
         }
         trace = self.search(
             [
@@ -57,15 +56,25 @@ class MailingTrace(models.Model):
                 clicked.append(mailchimp_date_to_datetime(activity["timestamp"]))
                 url = activity["url"]
                 ip = activity["ip"]
-                link_tracker = self.env["link.tracker"].create(
-                    {
-                        "url": url,
-                        "mass_mailing_id": mass_mailing.id,
-                        "campaign_id": mass_mailing.campaign_id.id,
-                        "medium_id": mass_mailing.medium_id.id,
-                        "source_id": mass_mailing.source_id.id,
-                    }
+                link_tracker = self.env["link.tracker"].search(
+                    [
+                        ("url", "=", url),
+                        ("mass_mailing_id", "=", mass_mailing.id),
+                        ("campaign_id", "=", mass_mailing.campaign_id.id),
+                        ("medium_id", "=", mass_mailing.medium_id.id),
+                        ("source_id", "=", mass_mailing.source_id.id),
+                    ]
                 )
+                if not link_tracker:
+                    link_tracker = self.env["link.tracker"].create(
+                        {
+                            "url": url,
+                            "mass_mailing_id": mass_mailing.id,
+                            "campaign_id": mass_mailing.campaign_id.id,
+                            "medium_id": mass_mailing.medium_id.id,
+                            "source_id": mass_mailing.source_id.id,
+                        }
+                    )
                 link_click = self.env["link.tracker.click"].search(
                     [
                         ("link_id", "=", link_tracker.id),
@@ -87,11 +96,12 @@ class MailingTrace(models.Model):
         if activities:
             mailing_trace_vals = {}
             if opened:
-                mailing_trace_vals["opened"] = max(opened)
+                mailing_trace_vals["open_datetime"] = max(opened)
+                mailing_trace_vals["trace_status"] = "open"
             if clicked:
-                mailing_trace_vals["clicked"] = max(clicked)
+                mailing_trace_vals["links_click_datetime"] = max(clicked)
+                mailing_trace_vals["trace_status"] = "open"
             if bounced:
-                mailing_trace_vals["bounced"] = max(bounced)
-                mailing_trace_vals["failure_type"] = "BOUNCE"
+                mailing_trace_vals["failure_type"] = "mail_bounce"
             trace.write(mailing_trace_vals)
         return True
