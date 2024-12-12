@@ -111,7 +111,8 @@ class MassMailingList(models.Model):
                 ("mailchimp_last_export", "<", lastcall),
             ]
         )
-        contacts.delayable().mailchimp_export().split(100).set(priority=50).delay()
+        contacts.delayable().mailchimp_export().set(
+            priority=50).split(100, chain=True).delay()
 
     def mailchimp_update_merge_fields(self):
         self.ensure_one()
