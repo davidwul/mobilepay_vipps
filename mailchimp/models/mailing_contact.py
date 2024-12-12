@@ -158,7 +158,7 @@ class MailingContact(models.Model):
                     _logger.error(error.text)
         return True
 
-    def mailchimp_export(self, with_commit=False):
+    def mailchimp_export(self):
         _logger.info("Exporting %s contacts to MailChimp", len(self))
         for contact in self.filtered("eligible_for_mailchimp_export"):
             for subscription in contact.subscription_ids.filtered(
@@ -167,60 +167,60 @@ class MailingContact(models.Model):
                 mailing_list = subscription.list_id
                 status = "subscribed" if not subscription.opt_out else "unsubscribed"
                 try:
-                    client = mailing_list.mailchimp_account_id._get_mailchimp_client()
-                    contact_id = contact.mailchimp_contact_id
-                    if not contact_id:
-                        try:
-                            contact_data = client.lists.get_list_member(
-                                mailing_list.mailchimp_list_id, contact.email_normalized
-                            )
-                            contact_id = contact_data.get("contact_id")
-                            status = contact_data.get("status")
-                            _logger.info(
-                                "Existing contact %s found in MailChimp with id %s",
-                                contact.email,
-                                contact_id,
-                            )
-                        except ApiClientError:
-                            _logger.info("No existing contact found in MailChimp.")
-                    operation = (
-                        client.lists.update_list_member
-                        if contact_id
-                        else client.lists.set_list_member
-                    )
-                    response = operation(
-                        mailing_list.mailchimp_list_id,
-                        contact_id,
-                        {
-                            "skip_merge_validation": True,
-                            "email_address": contact.email,
-                            "status": status,
-                            "status_if_new": status,
-                            "merge_fields": contact._get_merged_fields(),
-                        },
-                    )
-                    contact_data = contact._prepare_mailchimp_data(response)
-                    contact.write(contact_data)
-                    _logger.info(
-                        "Contact %s exported to MailChimp list %s with id %s",
-                        contact.email,
-                        mailing_list.name,
-                        response.get("contact_id"),
-                    )
-                    if mailing_list.mailchimp_export_tags:
-                        contact._export_tags()
-                    if not contact.active:
-                        # Archive contact in MailChimp
-                        client.lists.delete_list_member(
-                            mailing_list.mailchimp_list_id, self.mailchimp_contact_id
+                    with self.env.cr.savepoint():
+                        client = (
+                            mailing_list.mailchimp_account_id._get_mailchimp_client()
                         )
+                        contact_id = contact.mailchimp_contact_id
+                        if not contact_id:
+                            try:
+                                contact_data = client.lists.get_list_member(
+                                    mailing_list.mailchimp_list_id,
+                                    contact.email_normalized,
+                                )
+                                contact_id = contact_data.get("contact_id")
+                                status = contact_data.get("status")
+                                _logger.info(
+                                    "Existing contact %s found in MailChimp with id %s",
+                                    contact.email,
+                                    contact_id,
+                                )
+                            except ApiClientError:
+                                _logger.info("No existing contact found in MailChimp.")
+                        operation = (
+                            client.lists.update_list_member
+                            if contact_id
+                            else client.lists.set_list_member
+                        )
+                        response = operation(
+                            mailing_list.mailchimp_list_id,
+                            contact_id,
+                            {
+                                "skip_merge_validation": True,
+                                "email_address": contact.email,
+                                "status": status,
+                                "status_if_new": status,
+                                "merge_fields": contact._get_merged_fields(),
+                            },
+                        )
+                        contact_data = contact._prepare_mailchimp_data(response)
+                        contact.write(contact_data)
+                        _logger.info(
+                            "Contact %s exported to MailChimp list %s with id %s",
+                            contact.email,
+                            mailing_list.name,
+                            response.get("contact_id"),
+                        )
+                        if mailing_list.mailchimp_export_tags:
+                            contact._export_tags()
+                        if not contact.active:
+                            # Archive contact in MailChimp
+                            client.lists.delete_list_member(
+                                mailing_list.mailchimp_list_id,
+                                self.mailchimp_contact_id,
+                            )
                 except ApiClientError as error:
                     _logger.error(error.text)
-                    if with_commit:
-                        self.env.cr.rollback()
-                if with_commit:
-                    # pylint: disable=E8102
-                    self.env.cr.commit()
         return True
 
     def _prepare_mailchimp_data(self, mailchimp_data):
