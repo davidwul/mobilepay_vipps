@@ -112,7 +112,7 @@ class MassMailingList(models.Model):
             ]
         )
         contacts.delayable().mailchimp_export().set(
-            priority=50).split(100, chain=True).delay()
+            priority=50, channel="root.mailchimp").split(100, chain=True).delay()
 
     def mailchimp_update_merge_fields(self):
         self.ensure_one()
