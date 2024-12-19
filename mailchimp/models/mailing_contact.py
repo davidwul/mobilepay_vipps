@@ -204,6 +204,7 @@ class MailingContact(models.Model):
                             },
                         )
                         contact_data = contact._prepare_mailchimp_data(response)
+                        contact_data["mailchimp_last_export"] = fields.Datetime.now()
                         contact.write(contact_data)
                         _logger.info(
                             "Contact %s exported to MailChimp list %s with id %s",
@@ -322,3 +323,20 @@ class MailingContact(models.Model):
                 _logger.error(
                     "Couldn't sync tags for contact %s: %s", self.email, e.text
                 )
+
+    def unlink(self):
+        for contact in self:
+            if contact.mailchimp_contact_id:
+                for mailing_list in contact.list_ids.filtered("mailchimp_account_id"):
+                    try:
+                        client = mailing_list.mailchimp_account_id._get_mailchimp_client()
+                        client.lists.delete_list_member(
+                            mailing_list.mailchimp_list_id, contact.mailchimp_contact_id
+                        )
+                    except ApiClientError as e:
+                        _logger.error(
+                            "Couldn't delete contact %s from MailChimp: %s",
+                            contact.email,
+                            e.text,
+                        )
+        return super().unlink()
