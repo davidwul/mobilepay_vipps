@@ -218,7 +218,7 @@ class MailingContact(models.Model):
                             # Archive contact in MailChimp
                             client.lists.delete_list_member(
                                 mailing_list.mailchimp_list_id,
-                                self.mailchimp_contact_id,
+                                contact.mailchimp_contact_id,
                             )
                 except ApiClientError as error:
                     _logger.error(error.text)
