@@ -329,7 +329,9 @@ class MailingContact(models.Model):
             if contact.mailchimp_contact_id:
                 for mailing_list in contact.list_ids.filtered("mailchimp_account_id"):
                     try:
-                        client = mailing_list.mailchimp_account_id._get_mailchimp_client()
+                        client = (
+                            mailing_list.mailchimp_account_id._get_mailchimp_client()
+                        )
                         client.lists.delete_list_member(
                             mailing_list.mailchimp_list_id, contact.mailchimp_contact_id
                         )
