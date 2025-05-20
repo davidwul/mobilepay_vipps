@@ -18,10 +18,10 @@ mailchimp_lists.mailchimp_export_members()
         <field name="state">code</field>
         <field name="code">
 for account in model.search([]):
-    account.fetch_campaigns()
+    account.with_delay(channel="root.mailchimp").fetch_campaigns()
 mailings = model.env["mailing.mailing"].search([('mailchimp_id', '!=', False), ('state', '=', 'done')], limit=3)
 for mailing in mailings:
-    mailing.action_refresh_mailchimp()
+    mailing.with_delay(channel="root.mailchimp").action_refresh_mailchimp()
         </field>
         <field name='interval_number'>1</field>
         <field name='interval_type'>days</field>
