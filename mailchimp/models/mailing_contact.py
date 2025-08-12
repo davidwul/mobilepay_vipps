@@ -282,14 +282,15 @@ class MailingContact(models.Model):
             try:
                 client = mailing_list.mailchimp_account_id._get_mailchimp_client()
                 response = client.lists.get_list_member_tags(
-                    mailing_list.mailchimp_list_id, self.mailchimp_contact_id
+                    mailing_list.mailchimp_list_id, self.mailchimp_contact_id,
+                    count=100
                 )
                 mailchimp_tags = response.get("tags", [])
                 odoo_tags = self.mapped("tag_ids").with_context(lang="en_US")
                 del_command = [
                     {"name": tag.get("name"), "status": "inactive"}
                     for tag in mailchimp_tags
-                    if tag.get("id") not in odoo_tags.mapped("mailchimp_id")
+                    if str(tag.get("id")) not in odoo_tags.mapped("mailchimp_id")
                 ]
                 add_command = [
                     {"name": tag.name, "status": "active"} for tag in odoo_tags
