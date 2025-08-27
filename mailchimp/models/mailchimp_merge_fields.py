@@ -24,6 +24,7 @@ class MailChimpMergeField(models.Model):
             ("number", "Number"),
             ("address", "Address"),
             ("phone", "Phone"),
+            ("smsphone", "SMS Phone"),
             ("date", "Date"),
             ("radio", "Radio"),
             ("dropdown", "Dropdown"),
