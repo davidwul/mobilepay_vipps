@@ -296,9 +296,14 @@ class MailingContact(models.Model):
         """
         self.ensure_one()
         return {
-            merge_field.tag: safe_eval(merge_field.value, {"contact": self})
+            merge_field.tag: safe_eval(merge_field.value, self._get_global_dict())
             for merge_field in self.list_ids.mapped("mailchimp_merge_field_ids")
             if merge_field.value
+        }
+
+    def _get_global_dict(self):
+        return {
+            "contact": self,
         }
 
     def _export_tags(self):
