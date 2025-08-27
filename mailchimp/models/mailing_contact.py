@@ -1,10 +1,10 @@
 import logging
+import json
 
 from mailchimp_marketing.api_client import ApiClientError
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import json
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
