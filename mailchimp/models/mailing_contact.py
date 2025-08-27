@@ -4,6 +4,7 @@ from mailchimp_marketing.api_client import ApiClientError
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import json
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -221,7 +222,31 @@ class MailingContact(models.Model):
                                 contact.mailchimp_contact_id,
                             )
                 except ApiClientError as error:
-                    _logger.error(error.text)
+                    try:
+                        error_data = json.loads(error.text)
+                        if error_data.get("title") == "Member In Compliance State":
+                            subscription.write({"opt_out": True})
+                            _logger.warning(
+                                "Contact %s was opted-out due to a compliance state: %s",
+                                contact.email,
+                                error_data.get("detail"),
+                            )
+                            continue
+
+                        # Log details from other structured JSON errors
+                        _logger.error(
+                            "MailChimp API error for %s: %s - %s",
+                            contact.email,
+                            error_data.get("title", "Unknown Title"),
+                            error_data.get("detail", "No details provided."),
+                        )
+                    except ValueError:
+                        # Handle cases where the error response is not JSON
+                        _logger.error(
+                            "MailChimp API error for %s (non-JSON response): %s",
+                            contact.email,
+                            error.text
+                        )
         return True
 
     def _prepare_mailchimp_data(self, mailchimp_data):
