@@ -96,7 +96,10 @@ class MailChimpAccounts(models.Model):
             for campaign in response.get("campaigns", []):
                 mailings |= mailings.mailchimp_update_campaign_info(campaign, self.id)
                 campaign_date = mailchimp_date_to_datetime(campaign.get("create_time"))
-                if campaign_date > self.last_campaign_fetch:
+                if (
+                    not self.last_campaign_fetch
+                    or campaign_date > self.last_campaign_fetch
+                ):
                     self.last_campaign_fetch = campaign_date
                 # pylint: disable=E8102
                 self.env.cr.commit()

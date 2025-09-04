@@ -282,8 +282,7 @@ class MailingContact(models.Model):
             try:
                 client = mailing_list.mailchimp_account_id._get_mailchimp_client()
                 response = client.lists.get_list_member_tags(
-                    mailing_list.mailchimp_list_id, self.mailchimp_contact_id,
-                    count=100
+                    mailing_list.mailchimp_list_id, self.mailchimp_contact_id, count=100
                 )
                 mailchimp_tags = response.get("tags", [])
                 odoo_tags = self.mapped("tag_ids").with_context(lang="en_US")
