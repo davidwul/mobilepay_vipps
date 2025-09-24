@@ -1,5 +1,5 @@
-import logging
 import json
+import logging
 
 from mailchimp_marketing.api_client import ApiClientError
 
@@ -167,6 +167,8 @@ class MailingContact(models.Model):
             ):
                 mailing_list = subscription.list_id
                 status = "subscribed" if not subscription.opt_out else "unsubscribed"
+                if not contact.active:
+                    status = "archived"
                 try:
                     with self.env.cr.savepoint():
                         client = (
@@ -227,7 +229,8 @@ class MailingContact(models.Model):
                         if error_data.get("title") == "Member In Compliance State":
                             subscription.write({"opt_out": True})
                             _logger.warning(
-                                "Contact %s was opted-out due to a compliance state: %s",
+                                "Contact %s was opted-out due to a "
+                                "compliance state: %s",
                                 contact.email,
                                 error_data.get("detail"),
                             )
@@ -245,7 +248,7 @@ class MailingContact(models.Model):
                         _logger.error(
                             "MailChimp API error for %s (non-JSON response): %s",
                             contact.email,
-                            error.text
+                            error.text,
                         )
         return True
 

@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 from mailchimp_marketing.api_client import ApiClientError
@@ -104,14 +103,16 @@ class MassMailingList(models.Model):
 
     def mailchimp_export_members(self):
         lastcall = self.env.ref("mailchimp.export_members").lastcall
-        # Add one day to the lastcall to make sure we don't miss any contact
-        lastcall += datetime.timedelta(days=1)
         contacts = self.env["mailing.contact"].search(
             [
                 ("list_ids.id", "in", self.ids),
+                ("write_date", ">", lastcall),
                 "|",
-                ("mailchimp_contact_id", "=", False),
-                ("mailchimp_last_export", "<", lastcall),
+                ("active", "=", True),
+                # Inactive contacts to export
+                "&",
+                ("active", "=", False),
+                ("mailchimp_contact_id", "=", True),
             ]
         )
         (
