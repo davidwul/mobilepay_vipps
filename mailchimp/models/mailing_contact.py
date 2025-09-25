@@ -167,8 +167,6 @@ class MailingContact(models.Model):
             ):
                 mailing_list = subscription.list_id
                 status = "subscribed" if not subscription.opt_out else "unsubscribed"
-                if not contact.active:
-                    status = "archived"
                 try:
                     with self.env.cr.savepoint():
                         client = (
