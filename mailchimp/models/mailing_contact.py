@@ -262,6 +262,7 @@ class MailingContact(models.Model):
         @param mailchimp_data: Member Data given by MailChimp API.
         @return: Odoo compatible dictionary of values.
         """
+        self.ensure_one()
         if not isinstance(mailchimp_data, dict) or not any(
             [p in mailchimp_data for p in MAILCHIMP_MEMBER_REQUIRED_FIELDS]
         ):
@@ -289,7 +290,7 @@ class MailingContact(models.Model):
             "subscription_ids": [(1, subscription.id, subscription_vals)]
             if subscription
             else [(0, 0, subscription_vals)],
-            "active": status != "archived",
+            "active": False if status == "archived" else self.active,
             "cleaned": status == "cleaned",
             "mailchimp_last_fetch": fields.Datetime.now(),
         }
