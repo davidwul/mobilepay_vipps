@@ -221,6 +221,11 @@ class MailingContact(models.Model):
                                 mailing_list.mailchimp_list_id,
                                 contact.mailchimp_contact_id,
                             )
+                            _logger.info(
+                                "Contact %s archived in MailChimp list %s",
+                                contact.email,
+                                mailing_list.name,
+                            )
                 except ApiClientError as error:
                     try:
                         error_data = json.loads(error.text)
