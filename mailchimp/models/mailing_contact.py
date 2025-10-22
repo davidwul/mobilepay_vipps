@@ -262,7 +262,6 @@ class MailingContact(models.Model):
         @param mailchimp_data: Member Data given by MailChimp API.
         @return: Odoo compatible dictionary of values.
         """
-        self.ensure_one()
         if not isinstance(mailchimp_data, dict) or not any(
             [p in mailchimp_data for p in MAILCHIMP_MEMBER_REQUIRED_FIELDS]
         ):
@@ -271,17 +270,19 @@ class MailingContact(models.Model):
         mailing_list = self.env["mailing.list"].search(
             [("mailchimp_list_id", "=", list_id)]
         )
-        subscription = self.env["mailing.subscription"].search(
-            [
-                ("contact_id", "=", self.id),
-                ("list_id", "=", mailing_list.id),
-            ]
-        )
         status = mailchimp_data.get("status")
         subscription_vals = {
             "list_id": mailing_list.id,
             "opt_out": status in ("unsubscribed", "cleaned", "archived"),
         }
+        subscription = self.env["mailing.subscription"]
+        if self.id:
+            subscription = self.env["mailing.subscription"].search(
+                [
+                    ("contact_id", "=", self.id),
+                    ("list_id", "=", mailing_list.id),
+                ]
+            )
         vals = {
             "mailchimp_contact_id": mailchimp_data.get("contact_id"),
             "mailchimp_web_id": mailchimp_data.get("web_id"),
