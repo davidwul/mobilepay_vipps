@@ -291,7 +291,7 @@ class MailingContact(models.Model):
             "subscription_ids": [(1, subscription.id, subscription_vals)]
             if subscription
             else [(0, 0, subscription_vals)],
-            "active": False if status == "archived" else self.active,
+            "active": not (status == "archived" or (self.id and not self.active)),
             "cleaned": status == "cleaned",
             "mailchimp_last_fetch": fields.Datetime.now(),
         }
