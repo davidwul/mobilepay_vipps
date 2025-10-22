@@ -98,7 +98,9 @@ class MassMailingList(models.Model):
                 mailing_contacts |= mailing_contacts.mailchimp_import(member)
             total = response.get("total_items", 0)
             if total > MAX_MEMBERS_FETCH + offset:
-                mailing_list.mailchimp_fetch_members(offset + MAX_MEMBERS_FETCH)
+                mailing_list.with_delay(
+                    channel="root.mailchimp", priority=500
+                ).mailchimp_fetch_members(offset + MAX_MEMBERS_FETCH)
         return mailing_contacts
 
     def mailchimp_export_members(self):
