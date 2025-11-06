@@ -104,11 +104,9 @@ class MassMailingList(models.Model):
         return mailing_contacts
 
     def mailchimp_export_members(self):
-        lastcall = self.env.ref("mailchimp.export_members").lastcall
         contacts = self.env["mailing.contact"].search(
             [
                 ("list_ids.id", "in", self.ids),
-                ("write_date", ">", lastcall),
                 "|",
                 ("active", "=", True),
                 # Inactive contacts to export
@@ -117,14 +115,20 @@ class MassMailingList(models.Model):
                 ("mailchimp_contact_id", "=", True),
             ]
         )
-        (
-            contacts.filtered("eligible_for_mailchimp_export")
-            .delayable()
-            .mailchimp_export()
-            .set(priority=50, channel="root.mailchimp")
-            .split(100, chain=True)
-            .delay()
-        )
+        to_export = contacts.filtered("eligible_for_mailchimp_export")
+        if to_export:
+            _logger.info("Launching Mailchimp export for %d contacts", len(to_export))
+            (
+                contacts.filtered("eligible_for_mailchimp_export")
+                .delayable()
+                .mailchimp_export()
+                .set(priority=50, channel="root.mailchimp")
+                .split(100, chain=True)
+                .delay()
+            )
+        else:
+            _logger.warning("No contact to export to Mailchimp.")
+        return True
 
     def mailchimp_update_merge_fields(self):
         self.ensure_one()
