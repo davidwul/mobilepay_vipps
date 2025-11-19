@@ -16,13 +16,6 @@ This project holds proprietary modules for Compassion Switzerland.
 <!-- prettier-ignore-start -->
 
 [//]: # (addons)
-
-Available addons
-----------------
-addon | version | maintainers | summary
---- | --- | --- | ---
-[mailchimp](mailchimp/) | 17.0.1.0.0 | [![ecino](https://github.com/ecino.png?size=30px)](https://github.com/ecino) | Integrate & Manage MailChimp Operations from Odoo
-
 [//]: # (end addons)
 
 <!-- prettier-ignore-end -->
