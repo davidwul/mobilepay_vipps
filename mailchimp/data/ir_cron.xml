@@ -10,7 +10,6 @@ mailchimp_lists.mailchimp_export_members()
         </field>
         <field name='interval_number'>4</field>
         <field name='interval_type'>hours</field>
-        <field name="numbercall">-1</field>
     </record>
     <record id="fetch_campaigns_cron" model="ir.cron">
         <field name="name">Mailchimp: Fetch Campaigns</field>
@@ -25,6 +24,5 @@ for mailing in mailings:
         </field>
         <field name='interval_number'>1</field>
         <field name='interval_type'>days</field>
-        <field name="numbercall">-1</field>
     </record>
 </odoo>

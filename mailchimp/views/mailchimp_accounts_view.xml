@@ -64,7 +64,7 @@
                         <notebook>
                             <page name="lists" string="Audiences">
                                 <field name="list_ids">
-                                    <tree create="false">
+                                    <list create="false">
                                         <field name="name" string="Audience" />
                                         <field name="mailchimp_list_id" />
                                         <field name="contact_count" />
@@ -75,7 +75,7 @@
                       type="object"
                       icon="fa-refresh"
                     />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page name="campaign" string="Campaigns">
@@ -111,13 +111,13 @@
         </record>
 
         <record id="view_mailchimp_accounts_tree" model="ir.ui.view">
-            <field name="name">mailchimp.accounts.tree</field>
+            <field name="name">mailchimp.accounts.list</field>
             <field name="model">mailchimp.account</field>
             <field name="arch" type="xml">
-                <tree string="MailChimp Account">
+                <list>
                     <field name="name" />
                     <field name="api_key" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -125,7 +125,7 @@
             <field name="name">MailChimp Accounts</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mailchimp.account</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="context" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

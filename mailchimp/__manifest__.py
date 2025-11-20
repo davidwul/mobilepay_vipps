@@ -1,6 +1,6 @@
 {
     "name": "MailChimp Connector",
-    "version": "17.0.1.0.1",
+    "version": "18.0.1.0.0",
     "category": "Marketing",
     "summary": "Integrate & Manage MailChimp Operations from Odoo",
     "depends": [
@@ -24,5 +24,5 @@
     "license": "AGPL-3",
     "demo": [],
     "auto_install": False,
-    'installable': False,
+    "installable": True,
 }

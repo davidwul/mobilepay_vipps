@@ -107,9 +107,9 @@
                 <field name="color" position="after">
                     <field name="mailchimp_id" />
                 </field>
-                <xpath
-          expr="//div[hasclass('o_kanban_record_headings')]/h3"
-          position="after"
+                <field
+          name="user_id"
+          position="before"
         >
                     <t t-if="record.mailchimp_id.raw_value">
                         <span
@@ -118,7 +118,7 @@
                             MailChimp
                         </span>
                     </t>
-                </xpath>
+                </field>
             </field>
         </record>
 
