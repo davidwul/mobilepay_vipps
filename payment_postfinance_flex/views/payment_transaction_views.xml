@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+    <record id="payment_transaction_form_inherit_postfinance" model="ir.ui.view">
+        <field name="name">payment.transaction.form.inherit.postfinance</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.payment_transaction_form"/>
+        <field name="arch" type="xml">
+            <field name="provider_code" position="after">
+                <field name="postfinance_state" invisible="provider_code != 'postfinance'"/>
+                <field name="pending_email_send" invisible="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>

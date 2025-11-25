@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+    <data noupdate="1">
+        <!-- Cron to update payment transaction status -->
+        <record id="cron_update_postfinance_payment_transaction_status" model="ir.cron">
+            <field name='name'>PostFinance: Update Payment Transaction Status</field>
+            <field name='interval_number'>3</field>
+            <field name='interval_type'>hours</field>
+            <field name="active">True</field>
+            <field name="model_id" ref="payment_postfinance_flex.model_payment_provider"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_update_postfinance_payment_txn_status()</field>
+        </record>
+        <!-- Cron to synchronize PostFinance payment methods -->
+        <record id="cron_synchronize_postfinance_payment_method_values" model="ir.cron">
+            <field name='name'>PostFinance: Synchronize Payment Method Values</field>
+            <field name='interval_number'>10</field>
+            <field name='interval_type'>minutes</field>
+            <field name="active">True</field>
+            <field name="model_id" ref="payment.model_payment_provider"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_synchronize_payment_method_values()</field>
+        </record>
+    </data>
+</odoo>

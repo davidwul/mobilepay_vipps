@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+    <record id="view_payment_provider_log_search" model="ir.ui.view">
+        <field name="name">payment.provider.log.search.view</field>
+        <field name="model">payment.provider.log</field>
+        <field name="arch" type="xml">
+            <search string="Payment Provider Logs">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="create_date" string="Date"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_payment_provider_log_tree" model="ir.ui.view">
+        <field name="name">payment.provider.log.tree.view</field>
+        <field name="model">payment.provider.log</field>
+        <field name="arch" type="xml">
+            <list string="Payment Provider Logs" create="false" edit="false" delete="false"
+                  decoration-danger="status == 'failed'">
+                <field name="create_date" readonly="1" string="Date"/>
+                <field name="description" readonly="1"/>
+                <field name="provider_id" column_invisible="1"/>
+                <field name="name" readonly="1"/>
+                <field name="source" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_payment_provider_log_form" model="ir.ui.view">
+        <field name="name">payment.provider.log.form.view</field>
+        <field name="model">payment.provider.log</field>
+        <field name="arch" type="xml">
+            <form string="Payment Provider Logs" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="create_date" readonly="1" string="Date"/>
+                            <field name="description" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="provider_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="API Response" name="api_response">
+                            <group>
+                                <field name="response_data" readonly="1" nolabel="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_payment_provider_log" model="ir.actions.act_window">
+        <field name="name">Payment Provider Logs</field>
+        <field name="res_model">payment.provider.log</field>
+        <field name='view_mode'>list,form</field>
+        <field name="domain">[('provider_id', '=', active_id)]</field>
+        <field name="view_id" ref="view_payment_provider_log_tree"/>
+        <field name="search_view_id" ref="view_payment_provider_log_search"/>
+    </record>
+</odoo>

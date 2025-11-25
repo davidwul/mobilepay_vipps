@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<templates id="postfinance_interface" xml:space="preserve">
+    <t t-name="postfinance_interface.display_interface">
+    	<div class="postfinance-payment-interface">
+			<div id="postfinance-payment-form" class="postfinance-payment-form">
+			</div>
+    		<ul class="postfinance-payment-errors">
+			</ul>
+    	</div>
+    </t>
+</templates>

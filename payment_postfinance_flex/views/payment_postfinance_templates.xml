@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+    <data>
+        <template id="redirect_form">
+            <form t-att-action="api_url" method="post">
+                <input type="hidden" name='merchant' t-att-value='merchant'/>
+                <input type="hidden" name='amountIncludingTax' t-att-value="amount"/>
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name='merchantReference' t-att-value='reference'/>
+                <input type="hidden" name='currency' t-att-value='currency_name'/>
+                <input type="hidden" name='customerId' t-att-value='partner_id'/>
+                <input type="hidden" name='givenName' t-att-value='givenName'/>
+                <input type="hidden" name='familyName' t-att-value='familyName'/>
+                <input type="hidden" name='street' t-att-value='billing_address'/>
+                <input type="hidden" name='city' t-att-value='city'/>
+                <input type="hidden" name='postcode' t-att-value='postcode'/>
+                <input type="hidden" name='postalState' t-att-value='postalState'/>
+                <input type="hidden" name='country' t-att-value='country'/>
+                <input type="hidden" name='phoneNumber' t-att-value='phoneNumber'/>
+                <input type="hidden" name='emailAddress' t-att-value='emailAddress'/>
+                <input type="hidden" name='successUrl' t-att-value='successUrl'/>
+                <input type="hidden" name='failedUrl' t-att-value='failedUrl'/>
+                <input type="hidden" name='postfinance_payment_page_url' t-att-value='postfinance_payment_page_url'/>
+                <input type="hidden" name='postfinance_javascript_url' t-att-value='postfinance_javascript_url'/>
+                <input type="hidden" name='postfinance_payment_method' t-att-value='postfinance_payment_method'/>
+                <input type="hidden" name="version" value="1"/>
+                <input id="provider_postfinance" type="hidden" name="provider" t-att-value="provider_postfinance"/>
+                <div t-if="postfinance_javascript_url" class="container">
+                    <div class="o_postfinance_interface">
+                        <div class="row">
+                            <div class="o_postfinance_interface_content col-sm-6 col-sm-offset-3">
+                            </div>
+                            <ul id="o_postfinance_payment_errors">
+                            </ul>
+                            <div id="o_postfinance_payment_form">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script t-if="postfinance_javascript_url" type="text/javascript">
+                    import paymentForm from '@payment/js/payment_form';
+                    publicWidget.registry.PaymentForm.extend({
+                        var PostfinanceInterface = require('payment_postfinance_flex.postfinance_interface');
+                        var postfinanceInterfaceWidget = new PostfinanceInterface(null, {});
+                        postfinanceInterfaceWidget.attachTo($('.o_postfinance_interface'));
+                    });
+                </script>
+            </form>
+        </template>
+    </data>
+</odoo>

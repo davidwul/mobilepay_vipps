@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+    <record id="payment_method_form_inherit_postfinance" model="ir.ui.view">
+        <field name="name">payment.method.form.inherit.postfinance</field>
+        <field name="model">payment.method</field>
+        <field name="inherit_id" ref="payment.payment_method_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_primary']" position="after">
+                <field name="is_postfinance" invisible="1"/>
+            </xpath>
+            <xpath expr="//sheet/notebook/page[@name='configuration']" position="after">
+                <page name="postfinance_info" string="PostFinance Information" invisible="not is_postfinance">
+                    <group>
+                        <group>
+                            <field name="method_id"/>
+                            <field name="payment_method_ref"/>
+                            <field name="space_id"/>
+                        </group>
+                        <group>
+                            <field name="transaction_interface"/>
+                            <field name="one_click" invisible="1"/>
+                            <field name="one_click_mode"/>
+                            <field name="version"/>
+                        </group>
+                    </group>
+                    <group class="mt16">
+                        <field name="image_url"/>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//sheet/notebook/page[@name='configuration']" position="attributes">
+                <attribute name="invisible">is_postfinance</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

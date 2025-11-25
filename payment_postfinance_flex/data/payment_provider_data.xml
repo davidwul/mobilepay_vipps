@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+    <data noupdate="1">
+        <record id="payment_provider_postfinance" model="payment.provider">
+            <field name="name">PostFinance</field>
+            <field name="image_128"
+                   type="base64"
+                   file="payment_postfinance_flex/static/src/img/postfinance_icon.png"/>
+            <field name="code">postfinance</field>
+            <field name="state">disabled</field>
+            <field name="redirect_form_view_id" ref="redirect_form"/>
+            <field name="module_id" ref="base.module_payment_postfinance_flex"/>
+            <field name="postfinance_api_user_id">1234</field>
+            <field name="postfinance_api_space_id">1234</field>
+            <field name="postfinance_api_application_key">test_key</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+     <!-- Cron to delete old payment provider logs -->
+    <record model="ir.cron" id="cron_delete_old_payment_provider_logging">
+        <field name='name'>Delete Older Logs</field>
+        <field name='interval_number'>1</field>
+        <field name='interval_type'>days</field>
+        <field name="active">True</field>
+        <field name="model_id" ref="pits_payment_provider_base.model_payment_provider_log"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_delete_old_payment_provider_logging()</field>
+    </record>
+</odoo>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+    <record id="payment_provider_form_inherit_postfinance" model="ir.ui.view">
+        <field name="name">payment.provider.form.inherit.postfinance</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[1]" position='inside'>
+                <button class="oe_stat_button" type="object"
+                        name="update_postfinance_payment_methods"
+                        groups="base.group_system"
+                        invisible="code != 'postfinance'"
+                        icon="fa-refresh">
+                    <div class="o_stat_info o_field_widget">
+                        <span class="o_stat_text">Update Payment Methods</span>
+                    </div>
+                </button>
+                <button class="oe_stat_button" type="object"
+                        name="action_view_postfinance_payment_methods"
+                        groups="base.group_system"
+                        invisible="code != 'postfinance'"
+                        icon="fa-credit-card">
+                    <div class="o_stat_info o_field_widget">
+                        <span class="o_stat_text">Postfinance Payment Methods</span>
+                    </div>
+                </button>
+                <button class="oe_stat_button" type="action"
+                        name="%(pits_payment_provider_base.action_payment_provider_log)d"
+                        groups="base.group_system"
+                        invisible="code != 'postfinance'"
+                        icon="fa-history">
+                    <div class="o_stat_info o_field_widget">
+                        <span class="o_stat_text">Postfinance Logging</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr='//page[@name="credentials"]' position='inside'>
+                <group invisible="code != 'postfinance'">
+                    <field name="postfinance_api_user_id"/>
+                    <field name="postfinance_api_space_id"/>
+                    <field name="postfinance_api_application_key" password="True"/>
+                </group>
+                <group>
+                    <field name="hide_registration_template" invisible="1"/>
+                    <field name="hide_specific_countries" invisible="1"/>
+                    <field name="hide_payment_method_ids" invisible="1"/>
+                    <field name="hide_env_button" invisible="1"/>
+                </group>
+            </xpath>
+            <field name="payment_method_ids" position="before">
+            </field>
+            <xpath expr="//group[@name='availability']" position="attributes">
+                <attribute name="invisible">hide_specific_countries == True</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

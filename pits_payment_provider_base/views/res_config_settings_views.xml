@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<odoo>
+    <record id="res_config_settings_view_form_inherit_pits_payment_provider" model="ir.ui.view">
+        <field name="name">res.config.settings.form.inherit.pits_payment_provider</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block title="Payment Provider Logs" name="payment_provider_log_config">
+                    <setting string="Log Configuration" company_dependent="1"
+                             help="Number of Days after which Logs will be Deleted">
+                        <field name="log_delete_after_days"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

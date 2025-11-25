@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2019 - Present PIT Solutions AG. (<https://www.pitsolutions.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://www.webshopextension.com/en/licence-agreement/ -->
+<templates xml:space="preserve">
+    <t t-name="payment_postfinance_flex.PostfinanceIframeDialog">
+        <Dialog size="'md'" title="props.title" modalRef="modalRef">
+            <p t-out="props.body" class="text-prewrap"/>
+            <t t-set-slot="footer">
+                <button class="btn" t-att-class="props.confirmClass" t-on-click="_confirm" t-esc="props.confirmLabel"
+                        t-att-id="props.confirmId"/>
+                <button t-if="props.cancel" class="btn btn-secondary btn-close-modal" t-on-click="_cancel"
+                        t-esc="props.cancelLabel" t-att-id="props.cancelId"/>
+            </t>
+        </Dialog>
+    </t>
+</templates>

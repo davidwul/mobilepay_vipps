@@ -1,0 +1,524 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+<div>
+    <img style="width:100%;" src="intro.png" alt="PostFinance Checkout Flex Payment Integration for Online Store"/>
+    <div class="row" style="margin-top: -50%;padding: 5% 10% 5% 10%;text-align: center;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <h1 style="font-size:38px;font-family:'Poppins',poppins-semibold;letter-spacing: 0px;color:#BA2429;font-weight: bold;">
+                PostFinance Checkout Flex Payment Integration for Online Store
+            </h1>
+            <h2 style="font-size:26px;letter-spacing: 0px;color: #101010;">
+                Payment Page. Mobile friendly.
+            </h2>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-justify">
+            <p></p>
+            <p style="font: 14px/22px 'poppins-regular';color: #5E5E5E;">PostFinance Checkout Flex extension from PIT Solutions is a connector between
+                PostFinance Checkout Flex and Odoo Web Shop. It is a standardized way to accept payments via a multitude of different payment providers in the
+                world. It also supports payment gateways such as Postfinance pay, TWINT, Paypal, Online Banking, Credit/Debit Card. More information can be
+                found under <a href=https://checkout.postfinance.ch/en-us/doc/api/payment-method/list>PostFinance Checkout Flex</a>
+            </p>
+            <p style="font:14px/22px 'poppins-regular';color: #5E5E5E;margin-bottom: 0;">The extension connects Odoo shop users to the payment hub, which has
+                more than 50 payment gateways and processors linked to it. The Connector works with the help of the Rest API. This reduces the tendency of
+                customers abandoning their cart when their preferred payment gateway is missing on the payment page. It also connects the user to the different
+                payment service provider APIs, thereby lowering the payment routing costs.
+            </p>
+        </div>
+    </div>
+    <div style="margin-top: 10px;font-weight: bold;padding: 30px 114px;border: 1px solid #E3E5EF;font: 14px/22px 'poppins-medium';letter-spacing: 0px;">
+        <div>
+            <img src="info.png" class="logo" style="margin-left: -40px;margin-top: 5px" alt="Info"/>
+        </div>
+        <p style="margin-bottom: 10px;margin-top: -22px;font-weight: bold;">
+            For assistance with installation, please reach out to us at <a href="mailto:support@webshopextension.com">support@webshopextension.com</a>. We're
+            here to help!
+        </p>
+    </div>
+    <div style="margin-top: 10px;color: #5E5E5E" class="text-justify">
+        <img style="width: 100%;height: auto;" src="postfinancebanner.png" alt="postfinance banner"/>
+        <div style="margin-left: 115px;">
+            <img class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6" src="logo.png" alt="Logo"
+                 style="margin-top:-650px;max-width: 225px;height: auto;margin-bottom: 35px"/>
+            <h3 class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6"
+                style="font-size: 16px;margin-top:-300px;letter-spacing: 0px;color: #FFFFFF;">
+                PostFinance Checkout Flex extension from PIT Solutions is a connector between PostFinance Checkout Flex and Odoo Web Shop. It is a standardized
+                way to accept payments via a multitude of different payment providers in the world. It also supports payment gateways such as Postfinance pay,
+                TWINT, Paypal, Online Banking, Credit/Debit Card. More information can be found under PostFinance Checkout Flex.
+            </h3>
+        </div>
+    </div>
+    <div style="font-size:14px;padding: 0 114px 22px 114px;margin-top: 29px;" class="text-justify">
+        <p>PostFinance Checkout Flex back-end provides a configuration wherein one can define the Payment methods to be enabled for users. In addition to this,
+            the admin has the flexibility to specify for the payment completion process the user should be redirected to the service's provider's site or
+            handled within the shop site as I-frame. It depends on the payment service provider whether the gateway can be handled via redirection or I-frame or
+            both.
+        </p>
+        <p>Admin can enable the 3D secure functionality in the PostFinance Checkout Flex back-end for an additional security level in the payment process. If
+            enabled, then during the checkout process user would be directed to the 3D secure service of the payment method and the details would be handled
+            there.
+        </p>
+    </div>
+    <div style="background-color: #0D0001;padding: 51px 114px 63px 114px;background: #0D0001 0% 0% no-repeat padding-box;color: #fff;">
+        <div class="payment-methods-wrap">
+            <h2 style="color: #fff;font-size: 22px;padding-left: 57px;line-height: 50px;margin-bottom: 17px;font: 22px/48px 'poppins-medium';letter-spacing: 0px;">
+                <img src="payment_methods.png"
+                     style="margin-left:-60px;width: 34px;height: 34px;background-repeat: no-repeat !important;background-size: contain !important;" alt="Payment Methods"/>
+                <span style="margin-left:12px">Payment Methods:</span>
+            </h2>
+            <p style="font: 14px/22px 'poppins-regular';">
+                Few of the payment gateways which are available in PostFinance Checkout Flex are as below:
+            </p>
+            <div class="row" style="margin: -8px;">
+                <div class="col-sm-6 col-md-6 col-lg-2 col-xl-2"
+                     style="background-color: #E14249;width: 18%;height: 125px;background-image: linear-gradient(59deg, #BA2429 0%, #E14249 100%);padding: 24px 20px 52px 24px;border-radius: 7px;color: #fff;margin: 5px;min-height: 117px;overflow: hidden;">
+                    <h5 class="payment-method-card-name"
+                        style="color: #fff;font-size: 14px;margin-bottom: 5px;font: 14px/22px 'poppins-medium';letter-spacing: 0px;">
+                        PayPal
+                    </h5>
+                    <img src="chip.png" alt="" style="width: 30px;height: 18px;"/>
+                    <div style="background-image: url(strip.png);margin-top:20px;height: 7px;opacity: 0.2;background-repeat: repeat-x;">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2"
+                     style="background-color: #E14249;width: 18%;height: 125px;background-image: linear-gradient(59deg, #BA2429 0%, #E14249 100%);padding: 24px 20px 52px 24px;border-radius: 7px;color: #fff;margin: 5px;min-height: 117px;overflow: hidden;">
+                    <h5 class="payment-method-card-name"
+                        style="color: #fff;font-size: 14px;margin-bottom: 5px;font: 14px/22px 'poppins-medium';letter-spacing: 0px;">
+                        Postfinance pay
+                    </h5>
+                    <img src="chip.png" alt="" style="width: 30px;height: 18px;"/>
+                    <div style="background-image: url(strip.png);margin-top:20px;height: 7px;opacity: 0.2;background-repeat: repeat-x;">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2"
+                     style="background-color: #E14249;width: 18%;height: 125px;background-image: linear-gradient(59deg, #BA2429 0%, #E14249 100%);padding: 24px 20px 52px 24px;border-radius: 7px;color: #fff;margin: 5px;min-height: 117px;overflow: hidden;">
+                    <h5 class="payment-method-card-name"
+                        style="color: #fff;font-size: 14px;margin-bottom: 5px;font: 14px/22px 'poppins-medium';letter-spacing: 0px;">
+                        TWINT
+                    </h5>
+                    <img src="chip.png" alt="" style="width: 30px;height: 18px;"/>
+                    <div style="background-image: url(strip.png);margin-top:20px;height: 7px;opacity: 0.2;background-repeat: repeat-x;">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2"
+                     style="background-color: #E14249;width: 18%;height: 125px;background-image: linear-gradient(59deg, #BA2429 0%, #E14249 100%);padding: 24px 20px 52px 24px;border-radius: 7px;color: #fff;margin: 5px;min-height: 117px;overflow: hidden;">
+                    <h5 class="payment-method-card-name"
+                        style="color: #fff;font-size: 14px;margin-bottom: 5px;font: 14px/22px 'poppins-medium';letter-spacing: 0px;">
+                        Online Banking
+                    </h5>
+                    <img src="chip.png" alt="" style="width: 30px;height: 18px;"/>
+                    <div style="background-image: url(strip.png);margin-top:20px;height: 7px;opacity: 0.2;background-repeat: repeat-x;">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2"
+                     style="background-color: #E14249;width: 18%;height: 125px;background-image: linear-gradient(59deg, #BA2429 0%, #E14249 100%);padding: 24px 20px 52px 24px;border-radius: 7px;color: #fff;margin: 5px;min-height: 117px;overflow: hidden;">
+                    <h5 class="payment-method-card-name"
+                        style="color: #fff;font-size: 14px;margin-bottom: 5px;font: 14px/22px 'poppins-medium';letter-spacing: 0px;">
+                        Credit/Debit Card
+                    </h5>
+                    <img src="chip.png" alt="" style="width: 30px;height: 18px;"/>
+                    <div style="background-image: url(strip.png);margin-top:20px;height: 7px;opacity: 0.2;background-repeat: repeat-x;">
+                    </div>
+                </div>
+            </div>
+            <div class="configurations-wrap" style="margin-top: 41px;">
+                <h2 style="color: #fff;font-size: 22px;padding-left: 57px;line-height: 50px;margin-bottom: 17px;font: 22px/48px 'poppins-medium';letter-spacing: 0px;">
+                    <img src="configurations.png"
+                         style="margin-left:-60px;width: 34px;height: 34px;background-repeat: no-repeat !important;background-size: contain !important;" alt="Configuration"/>
+                    <span style="margin-left:12px">Configurations</span>
+                </h2>
+                <p style="font: 14px/22px 'poppins-regular';">
+                    Once the configurations have been done, all the user needs to do is:
+                </p>
+                <div class="detail-list-group">
+                    <div class="row" style="margin-left: 0;margin-right: 0;">
+                        <div class="col-md-6 col-sm-12 col-12 detail-list-item" style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Create an order by adding items to cart.</p>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-12 detail-list-item" style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Select the payment method.</p>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-12 detail-list-item" style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Complete payment transaction.</p>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-12 detail-list-item" style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Order is placed on successful payment transaction.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="compatibility-wrap" style="margin-top: 41px;">
+                <h2 style="color: #fff;font-size: 22px;padding-left: 57px;line-height: 50px;margin-bottom: 17px;font: 22px/48px 'poppins-medium';letter-spacing: 0px;">
+                    <img src="compatibility.png"
+                         style="margin-left:-60px;width: 34px;height: 34px;background-repeat: no-repeat !important;background-size: contain !important;" alt="Compatibility"/>
+                    <span style="margin-left:12px">Compatibility</span>
+                </h2>
+                <p style="font: 14px/22px 'poppins-regular';">
+                    The extension is compatible with Odoo version 18.0, supporting both Community and Enterprise editions.
+                </p>
+                <p style="font: 14px/22px 'poppins-regular';">
+                    Please note that for some payment methods you are required to create a payment service
+                    providing
+                    contract with the corresponding payment service provider.
+                </p>
+            </div>
+            <div class="features-wrap" style="margin-top: 41px;">
+                <h2 style="color: #fff;font-size: 22px;padding-left: 57px;line-height: 50px;margin-bottom: 17px;font: 22px/48px 'poppins-medium';letter-spacing: 0px;">
+                    <img src="features.png"
+                         style="margin-left:-60px;width: 34px;height: 34px;background-repeat: no-repeat !important;background-size: contain !important;" alt="Features"/>
+                    <span style="margin-left:12px">Features</span>
+                </h2>
+                <div class="detail-list-group">
+                    <div class="row" style="margin-left: 0;margin-right: 0;">
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-12 detail-list-item"
+                             style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Easy to install.</p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-12 detail-list-item"
+                             style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">User-friendly and
+                                configurable as per one's requirements.
+                            </p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-12 detail-list-item"
+                             style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Multiple payment methods.</p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-12 detail-list-item"
+                             style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Additional security level with
+                                3D secure feature.
+                            </p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-12 detail-list-item"
+                             style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Supports I-frame and
+                                Redirection mode for payment page.
+                            </p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-12 detail-list-item"
+                             style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                 style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">Multi Website Compatibility.</p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6 col-12 detail-list-item" style="width: 30%;padding: 10px 35px;">
+                            <img src="tick.png" class="logo"
+                                style="margin-left:-30px;background-repeat: no-repeat;background-size: contain;width: 15px;height: 15px;top: 13px;left: 0;" alt=""/>
+                            <p style="margin-right: 30px;margin-top:-18px;">
+                                One-click payments via PostFinance-stored tokens (no card data stored in Odoo).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="oneclick-wrap" style="margin-top: 41px;">
+                <h2 style="color: #fff;font-size: 22px;padding-left: 57px;line-height: 50px;margin-bottom: 17px;font: 22px/48px 'poppins-medium';letter-spacing: 0px;">
+                    <img src="payment_methods.png"
+                         style="margin-left:-60px;width: 34px;height: 34px;background-repeat: no-repeat !important;background-size: contain !important;" alt="Payment Methods"/>
+                    <span style="margin-left:12px">One-Click Payments (Tokens Stored by PostFinance)</span>
+                </h2>
+                <p style="font: 14px/22px 'poppins-regular';">
+                    Customers can save their card with <strong>PostFinance</strong> and reuse it on future checkouts.
+                    The saved payment method is presented on the PostFinance hosted payment page
+                    (iFrame or Redirect). <strong>Odoo does not store tokens or card data.</strong>
+                </p>
+            
+                <div style="background:#200304;border-radius:7px;padding:16px 20px;margin:18px 0;-webkit-box-shadow:0px 3px 16px #00000038;box-shadow:0px 3px 16px #00000038;">
+                    <strong style="color:#fff;">How it works</strong>
+                    <ul style="margin:8px 0 0 18px;font: 14px/22px 'poppins-regular';">
+                        <li>Token creation and storage happen entirely in PostFinance.</li>
+                        <li>During checkout (iFrame/Redirect), buyers can select their previously saved card.</li>
+                        <li>No token objects are created in Odoo; reuse happens on the PostFinance page.</li>
+                    </ul>
+                </div>
+                <h3 style="color:#fff;font-size:18px;margin:16px 0 8px;">Enable One-Click in PostFinance (Back Office)</h3>
+                <ol style="font: 14px/22px 'poppins-regular';margin-left:18px;">
+                    <li>Go to <em>Settings -> Payment -> Payment Options -> Payment Methods</em>.</li>
+                    <li>Open your card payment method (e.g., Visa/Mastercard).</li>
+                    <li>In <strong>One-Click Payment</strong>, set <strong>One-Click Payment Mode</strong> to:
+                        <ul style="margin:6px 0 0 18px;">
+                            <li><strong>Allow Storage</strong> - buyer can choose to save the card.</li>
+                            <li><strong>Force Storage</strong> - card is always saved when supported.</li>
+                        </ul>
+                    </li>
+                    <li>Save in PostFinance.</li>
+                </ol>
+                <h3 style="color:#fff;font-size:18px;margin:16px 0 8px;">Sync Methods in Odoo</h3>
+                <ol style="font: 14px/22px 'poppins-regular';margin-left:18px;">
+                    <li>Open <em>Accounting -> Configuration -> Payment Providers</em> and select <strong>PostFinance</strong>.</li>
+                    <li>Click the <strong>Update Payment Methods</strong> smart button to pull the latest methods/settings from PostFinance.</li>
+                    <li>Publish/Activate the provider. No token-storage setting is required in Odoo.</li>
+                </ol>
+                <div style="border-left:4px solid #ffd65a;background:#2a0c0e;padding:10px 12px;border-radius:4px;">
+                    <strong>Note:</strong> Managing saved cards (create/delete/permissions) is done in the PostFinance back office.
+                    Since Odoo doesn't hold tokens, they won't appear under customers in Odoo.
+                </div>
+            </div>
+            <div class="limitations-wrap" style="margin-top: 41px;">
+                <h2 style="color: #fff;font-size: 22px;padding-left: 57px;line-height: 50px;margin-bottom: 17px;font: 22px/48px 'poppins-medium';letter-spacing: 0px;">
+                    <img src="payment_processors.png"
+                         style="margin-left:-60px;width: 34px;height: 34px;background-repeat: no-repeat !important;background-size: contain !important;" alt="Payment Processors"/>
+                    <span style="margin-left:12px">Limitations</span>
+                </h2>
+                <p style="font: 14px/22px 'poppins-regular';">
+                    <strong>Cryptocurrency Payment Unavailable:</strong> Please be aware that cryptocurrency payments powered by PostFinance are currently not
+                    supported. This limitation is due to PostFinance and is outside of our control. We recommend using alternative supported payment methods to
+                    complete your transaction.
+                </p>
+            </div>
+        </div>
+        <section style="background-color: #b91a20;text-align: center;color: #fff;padding-bottom: 90px;">
+            <img style="width: 100%;" src="Screenshot_banner.png" alt="screenshot banner"/>
+            <h1 class="screenshot-heading" style="font-size: 30px;color: #fff;margin-top: -180px;margin-left:-800px;">
+                Screenshots
+            </h1>
+            <h2 style="font-size:28px;color: #fff;margin-top: 160px;margin-bottom: 0;font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                Odoo backend configuration
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                 src="Screenshot Backend Configration1.png" alt="Odoo backend configuration"/>
+            <h2 style="font-size:28px;color: #fff;margin-top: 32px;margin-bottom: 0;font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                PostFinance Back Office: Payment Methods navigation
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                src="Screenshot_postfinance_one_click1.png" alt="PostFinance: Settings -> Payment -> Payment Options -> Payment Methods"/>
+            <h2 style="font-size:28px;color: #fff;margin-top: 32px;margin-bottom: 0;font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                One-Click Payment Mode options
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                src="Screenshot_postfinance_one_click2.png" alt="PostFinance: One-Click Payment Mode (Allow Storage / Force Storage)"/>
+            <h2 style="font-size:28px;color: #fff;margin-top: 32px;margin-bottom: 0;font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                Click on Update Payment Methods smart button to sync payment methods data from postfinance backoffice.
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                 src="Screenshot Backend Configration2.png" alt=""/>
+            <ul class="requirements"
+                style="display: inline-block;list-style: none;margin-bottom: 0;padding: 29px 18px 0 18px;text-align: left;width: auto;max-width: 60%;margin: auto;font: 14px/22px 'poppins-regular';">
+                The PostFinance Checkout Flex extension can be configured by specifying the details required:
+                <li
+                        style="font-size:14px;margin-top: 22px;margin-bottom: 18px;padding-left: 37px;font: 14px/22px 'poppins-medium';">
+                    <div>
+                        <img src="redtick.png" class="logo"
+                             style="margin-left:-40px;content: '';width: 22px;height: 22px;background-size: contain;background-repeat: no-repeat;left: 0;" alt=""/>
+                    </div>
+                    <p style="margin-top:-20px;">Rest API UserID: Application User ID created from checkout.PostFinance.ch</p>
+                </li>
+                <li style="font-size:14px;margin-bottom: 18px;padding-left: 37px;font: 14px/22px 'poppins-medium';">
+                    <div>
+                        <img src="redtick.png" class="logo"
+                             style="margin-left:-40px;content: '';width: 22px;height: 22px;background-size: contain;background-repeat: no-repeat;left: 0;" alt=""/>
+                    </div>
+                    <p style="margin-top:-20px;">Rest API SpaceID: Space ID created from https://checkout.PostFinance.ch/</p>
+                </li>
+                <li style="font-size:14px;padding-left: 37px;font: 14px/22px 'poppins-medium';">
+                    <div>
+                        <img src="redtick.png" class="logo"
+                             style="margin-left:-40px;content: '';width: 22px;height: 22px;background-size: contain;background-repeat: no-repeat;left: 0;" alt=""/>
+                    </div>
+                    <p style="margin-top:-20px;">Application Key: Application Key generated from https://checkout.PostFinance.ch/</p>
+                </li>
+            </ul>
+            <h2 style="font-size:28px;color: #fff;margin-top: 32px;margin-bottom: 0;font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                Multiple Payment Methods
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                 src="Screenshot Payment Methods.png" alt=""/>
+            <h2 style="font-size:28px;color: #fff;margin-top: 32px;margin-bottom: 0; font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                Checkout with Saved Card (via PostFinance)
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                 src="Screenshot_postfinance_save_card.png" alt="PostFinance checkout page showing stored card and option to save for future use"/>
+            <h2 style="font-size:28px;color: #fff;margin-top: 32px;margin-bottom: 0;font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                Payment Page Processing
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                 src="Screenshot Payment Processing.png" alt=""/>
+            <h2 style="font-size:28px;color: #fff;margin-top: 32px;margin-bottom: 0;font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                Order Confirmation
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                 src="Screenshot Order Confirmation.png" alt=""/>
+            <h2 style="font-size:28px;color: #fff;margin-top: 32px;margin-bottom: 0;font: 28px/48px 'poppins-medium';padding: 0 20px;">
+                Order Failed
+            </h2>
+            <img style="margin-top: 31px;width: 80%;-webkit-box-shadow: 0px 3px 36px #1032652E;box-shadow: 0px 3px 36px #1032652E;"
+                 src="Screenshot Order Failed.png" alt=""/>
+        </section>
+        <section class="odoo-suggested-modules"
+            style="background-color: #0D0001;background: #0D0001 0% 0% no-repeat padding-box;color: #fff;padding: 50px 0px 0px 0px;">
+            <h1 style="font-size:36px;color: #fff;text-align: center;margin-bottom: 25px;font: 36px/48px 'poppins-semibold';">
+                Suggested Modules
+            </h1>
+            <h4 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium'; padding-top: 10px;">
+                Explore Our Other Modules
+            </h4>
+            <div class="row" style="display: flex; justify-content: space-between; flex-wrap: wrap; padding-top: 20px;">
+                <div class="col-4" style="flex: 1 0 32%; margin-bottom: 20px;">
+                    <a href="https://apps.odoo.com/apps/modules/18.0/pits_payment_saferpay" target="_blank">
+                        <div style="background-color: #200304; padding: 20px;">
+                            <img src="saferpay_provider.png" alt="Saferpay" style="width: 100%; height: 230px;">
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium'; padding-top: 10px;">
+                                Saferpay Payment Provider
+                            </h6>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-4" style="flex: 1 0 32%; margin-bottom: 20px;">
+                    <a href="https://apps.odoo.com/apps/modules/18.0/payment_wallee" target="_blank">
+                        <div style="background-color: #200304; padding: 20px;">
+                            <img src="wallee_provider.png" alt="Wallee" style="width: 100%; height: 230px;">
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium'; padding-top: 10px;">
+                                Wallee Payment Provider
+                            </h6>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-4" style="flex: 1 0 32%; margin-bottom: 20px;">
+                    <a href="https://apps.odoo.com/apps/modules/18.0/pits_payment_datatrans" target="_blank">
+                        <div style="background-color: #200304; padding: 20px;">
+                            <img src="datatrans_provider.png" alt="Datatrans" style="width: 100%; height: 230px;">
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium'; padding-top: 10px;">
+                                Datatrans Payment Provider
+                            </h6>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-4" style="flex: 1 0 32%; margin-bottom: 20px;">
+                    <a href="https://apps.odoo.com/apps/modules/18.0/pits_fcm_notifications" target="_blank">
+                        <div style="background-color: #200304; padding: 20px;">
+                            <img src="firebase_notification.png" alt="FCM" style="width: 100%; height: 230px;">
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium'; padding-top: 10px;">
+                                Firebase Cloud Messaging Notification
+                            </h6>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-4" style="flex: 1 0 32%; margin-bottom: 20px;">
+                    <a href="https://apps.odoo.com/apps/modules/18.0/pits_pos_van_sale" target="_blank">
+                        <div style="background-color: #200304; padding: 20px;">
+                            <img src="van_sale_pos.png" alt="Van Sales POS" style="width: 100%; height: 230px;">
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium'; padding-top: 10px;">
+                                Van Sales POS
+                            </h6>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-4" style="flex: 1 0 32%; margin-bottom: 20px;">
+                    <a href="https://apps.odoo.com/apps/modules/18.0/pits_token_management" target="_blank">
+                        <div style="background-color: #200304; padding: 20px;">
+                            <img src="token_management.jpg" alt="Token Management" style="width: 100%; height: 230px;">
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium'; padding-top: 10px;">
+                                Token Management
+                            </h6>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section class="odoo-services"
+                 style="background-color: #0D0001;background: #0D0001 0% 0% no-repeat padding-box;color: #fff;padding: 50px 0px 0px 0px;">
+            <h1 style="font-size:36px;color: #fff;text-align: center;margin-bottom: 25px;font: 36px/48px 'poppins-semibold';">
+                PITS Odoo Services
+            </h1>
+            <div class="row" style="margin-left: -10px;margin-right: -10px;">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3" style="padding: 0;">
+                    <div class="services-card" style="padding: 10px;">
+                        <div class="services-card-content"
+                             style="background-color: #200304;padding: 47px 28px;background: #200304 0% 0% no-repeat padding-box;-webkit-box-shadow: 0px 3px 16px #00000038;box-shadow: 0px 3px 16px #00000038;max-height: 202px;">
+                            <img class="services-card-icon" style="margin-bottom: 30px;" src="implementation.png" alt=""/>
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium';" class="services-card-text">
+                                Odoo Implementation
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3" style="padding: 0;">
+                    <div class="services-card" style="padding: 10px;">
+                        <div class="services-card-content"
+                             style="background-color: #200304;padding: 47px 28px;background: #200304 0% 0% no-repeat padding-box;-webkit-box-shadow: 0px 3px 16px #00000038;box-shadow: 0px 3px 16px #00000038;max-height: 202px;">
+                            <img class="services-card-icon" style="margin-bottom: 30px;" src="apps.png" alt=""/>
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium';" class="services-card-text">
+                                Odoo Community Apps
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3" style="padding: 0;">
+                    <div class="services-card" style="padding: 10px;">
+                        <div class="services-card-content"
+                             style="background-color: #200304;padding: 47px 28px;background: #200304 0% 0% no-repeat padding-box;-webkit-box-shadow: 0px 3px 16px #00000038;box-shadow: 0px 3px 16px #00000038;max-height: 202px;">
+                            <img class="services-card-icon" style="margin-bottom: 30px;" src="maintanence.png" alt=""/>
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium';" class="services-card-text">
+                                Odoo Support & Maintenance
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3" style="padding: 0;">
+                    <div class="services-card" style="padding: 10px;">
+                        <div class="services-card-content"
+                             style="background-color: #200304;padding: 47px 28px;background: #200304 0% 0% no-repeat padding-box;-webkit-box-shadow: 0px 3px 16px #00000038;box-shadow: 0px 3px 16px #00000038;max-height: 202px;">
+                            <img class="services-card-icon" style="margin-bottom: 30px;" src="customisation.png" alt=""/>
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium';" class="services-card-text">
+                                Odoo Customization
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3" style="padding: 0;">
+                    <div class="services-card" style="padding: 10px;">
+                        <div class="services-card-content"
+                             style="background-color: #200304;padding: 47px 28px;background: #200304 0% 0% no-repeat padding-box;-webkit-box-shadow: 0px 3px 16px #00000038;box-shadow: 0px 3px 16px #00000038;max-height: 202px;">
+                            <img class="services-card-icon" style="margin-bottom: 30px;" src="integration.png" alt=""/>
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium';" class="services-card-text">
+                                Odoo Integration Services
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3" style="padding: 0;">
+                    <div class="services-card" style="padding: 10px;">
+                        <div class="services-card-content"
+                             style="background-color: #200304;padding: 47px 28px;background: #200304 0% 0% no-repeat padding-box;-webkit-box-shadow: 0px 3px 16px #00000038;box-shadow: 0px 3px 16px #00000038;max-height: 202px;">
+                            <img class="services-card-icon" style="margin-bottom: 30px;" src="developer.png" alt=""/>
+                            <h6 style="font-size:16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium';" class="services-card-text">
+                                Odoo Developer Outsourcing
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 services-card-content" style="padding: 0;">
+                    <div class="services-card" style="padding: 10px;">
+                        <div class="services-card-content"
+                             style="background-color: #200304;padding: 47px 28px;background: #200304 0% 0% no-repeat padding-box;-webkit-box-shadow: 0px 3px 16px #00000038;box-shadow: 0px 3px 16px #00000038;max-height: 202px;">
+                            <img class="services-card-icon" style="margin-bottom: 30px;" src="migration.png" alt=""/>
+                            <h6 style="font-size: 16px;color: #fff;margin-bottom: 0;font: 16px/22px 'poppins-medium';" class="services-card-text">
+                                Odoo Database Migration
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
