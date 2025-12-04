@@ -1,0 +1,254 @@
+{
+  "_comment": "Monitoring Configuration Example for Vipps/MobilePay Integration",
+  "_note": "Comprehensive monitoring setup with Prometheus, Grafana, and alerting",
+  
+  "prometheus": {
+    "global": {
+      "scrape_interval": "15s",
+      "evaluation_interval": "15s"
+    },
+    "scrape_configs": [
+      {
+        "job_name": "odoo",
+        "static_configs": [
+          {
+            "targets": ["localhost:8069"]
+          }
+        ],
+        "metrics_path": "/metrics",
+        "scrape_interval": "30s"
+      },
+      {
+        "job_name": "postgres",
+        "static_configs": [
+          {
+            "targets": ["localhost:9187"]
+          }
+        ]
+      },
+      {
+        "job_name": "nginx",
+        "static_configs": [
+          {
+            "targets": ["localhost:9113"]
+          }
+        ]
+      },
+      {
+        "job_name": "node",
+        "static_configs": [
+          {
+            "targets": ["localhost:9100"]
+          }
+        ]
+      }
+    ],
+    "rule_files": [
+      "alerts/odoo_alerts.yml",
+      "alerts/vipps_alerts.yml",
+      "alerts/system_alerts.yml"
+    ]
+  },
+  
+  "grafana": {
+    "server": {
+      "http_port": 3000,
+      "domain": "monitoring.your-domain.com",
+      "root_url": "https://monitoring.your-domain.com"
+    },
+    "security": {
+      "admin_user": "admin",
+      "admin_password": "secure_grafana_password",
+      "secret_key": "your_secret_key_here"
+    },
+    "dashboards": [
+      {
+        "name": "Odoo Performance",
+        "file": "dashboards/odoo_performance.json"
+      },
+      {
+        "name": "Vipps Payment Metrics",
+        "file": "dashboards/vipps_payments.json"
+      },
+      {
+        "name": "System Resources",
+        "file": "dashboards/system_resources.json"
+      },
+      {
+        "name": "Database Performance",
+        "file": "dashboards/database_performance.json"
+      }
+    ]
+  },
+  
+  "alertmanager": {
+    "global": {
+      "smtp_smarthost": "smtp.your-company.com:587",
+      "smtp_from": "alerts@your-company.com",
+      "smtp_auth_username": "alerts@your-company.com",
+      "smtp_auth_password": "your_smtp_password"
+    },
+    "route": {
+      "group_by": ["alertname"],
+      "group_wait": "10s",
+      "group_interval": "10s",
+      "repeat_interval": "1h",
+      "receiver": "web.hook"
+    },
+    "receivers": [
+      {
+        "name": "web.hook",
+        "email_configs": [
+          {
+            "to": "devops@your-company.com",
+            "subject": "Vipps/MobilePay Alert: {{ .GroupLabels.alertname }}",
+            "body": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}"
+          }
+        ],
+        "slack_configs": [
+          {
+            "api_url": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK",
+            "channel": "#alerts",
+            "title": "Vipps/MobilePay Alert",
+            "text": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}"
+          }
+        ]
+      }
+    ]
+  },
+  
+  "metrics": {
+    "payment_metrics": [
+      {
+        "name": "vipps_payments_total",
+        "type": "counter",
+        "description": "Total number of Vipps payments processed"
+      },
+      {
+        "name": "vipps_payment_duration_seconds",
+        "type": "histogram",
+        "description": "Time taken to process Vipps payments"
+      },
+      {
+        "name": "vipps_payment_failures_total",
+        "type": "counter",
+        "description": "Total number of failed Vipps payments"
+      },
+      {
+        "name": "mobilepay_payments_total",
+        "type": "counter",
+        "description": "Total number of MobilePay payments processed"
+      },
+      {
+        "name": "webhook_requests_total",
+        "type": "counter",
+        "description": "Total number of webhook requests received"
+      }
+    ],
+    "system_metrics": [
+      {
+        "name": "odoo_active_users",
+        "type": "gauge",
+        "description": "Number of active Odoo users"
+      },
+      {
+        "name": "odoo_database_connections",
+        "type": "gauge",
+        "description": "Number of active database connections"
+      },
+      {
+        "name": "odoo_memory_usage_bytes",
+        "type": "gauge",
+        "description": "Odoo memory usage in bytes"
+      }
+    ]
+  },
+  
+  "alerts": {
+    "payment_alerts": [
+      {
+        "alert": "VippsPaymentFailureRate",
+        "expr": "rate(vipps_payment_failures_total[5m]) > 0.1",
+        "for": "2m",
+        "labels": {
+          "severity": "warning"
+        },
+        "annotations": {
+          "summary": "High Vipps payment failure rate",
+          "description": "Vipps payment failure rate is {{ $value }} per second"
+        }
+      },
+      {
+        "alert": "WebhookDown",
+        "expr": "up{job=\"webhook\"} == 0",
+        "for": "1m",
+        "labels": {
+          "severity": "critical"
+        },
+        "annotations": {
+          "summary": "Webhook endpoint is down",
+          "description": "Webhook endpoint has been down for more than 1 minute"
+        }
+      }
+    ],
+    "system_alerts": [
+      {
+        "alert": "HighMemoryUsage",
+        "expr": "odoo_memory_usage_bytes > 6000000000",
+        "for": "5m",
+        "labels": {
+          "severity": "warning"
+        },
+        "annotations": {
+          "summary": "High memory usage",
+          "description": "Odoo memory usage is {{ $value }} bytes"
+        }
+      },
+      {
+        "alert": "DatabaseConnectionsHigh",
+        "expr": "odoo_database_connections > 150",
+        "for": "2m",
+        "labels": {
+          "severity": "warning"
+        },
+        "annotations": {
+          "summary": "High database connections",
+          "description": "Database connections: {{ $value }}"
+        }
+      }
+    ]
+  },
+  
+  "log_aggregation": {
+    "elasticsearch": {
+      "hosts": ["localhost:9200"],
+      "index_pattern": "odoo-logs-*"
+    },
+    "logstash": {
+      "input": {
+        "file": {
+          "path": "/var/log/odoo/*.log",
+          "type": "odoo"
+        }
+      },
+      "filter": {
+        "grok": {
+          "match": {
+            "message": "%{TIMESTAMP_ISO8601:timestamp} %{NUMBER:pid} %{WORD:level} %{DATA:database} %{GREEDYDATA:message}"
+          }
+        }
+      },
+      "output": {
+        "elasticsearch": {
+          "hosts": ["localhost:9200"],
+          "index": "odoo-logs-%{+YYYY.MM.dd}"
+        }
+      }
+    },
+    "kibana": {
+      "server.port": 5601,
+      "server.host": "0.0.0.0",
+      "elasticsearch.hosts": ["http://localhost:9200"]
+    }
+  }
+}

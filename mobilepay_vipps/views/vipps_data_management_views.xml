@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Data Export Wizard -->
+    <record id="view_vipps_data_export_wizard_form" model="ir.ui.view">
+        <field name="name">vipps.data.export.wizard.form</field>
+        <field name="model">vipps.data.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export Vipps Customer Data">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Export Customer Data</h1>
+                        <p>Export all collected Vipps/MobilePay data for GDPR compliance</p>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="export_format" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="include_transaction_details"/>
+                            <field name="include_raw_data"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Export Preview" invisible="not export_data">
+                        <field name="export_data" widget="text" readonly="1" nolabel="1"/>
+                    </group>
+                    
+                    <div class="alert alert-info" role="alert">
+                        <strong>Export Information:</strong>
+                        <ul class="mb-0">
+                            <li><strong>JSON Format:</strong> Complete structured data export</li>
+                            <li><strong>CSV Format:</strong> Tabular format suitable for spreadsheets</li>
+                            <li><strong>PDF Format:</strong> Human-readable report format</li>
+                        </ul>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_generate_export" 
+                            string="Generate Export" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Data Deletion Wizard -->
+    <record id="view_vipps_data_deletion_wizard_form" model="ir.ui.view">
+        <field name="name">vipps.data.deletion.wizard.form</field>
+        <field name="model">vipps.data.deletion.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Delete Vipps Customer Data">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Delete Customer Data</h1>
+                        <p>Permanently delete all collected Vipps/MobilePay data</p>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="transaction_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="deletion_reason" required="1"/>
+                            <field name="create_audit_log"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Deletion Notes">
+                        <field name="deletion_notes" nolabel="1" placeholder="Optional notes about this deletion..."/>
+                    </group>
+                    
+                    <group>
+                        <field name="confirm_deletion" required="1"/>
+                    </group>
+                    
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Warning:</strong> This action will permanently delete all collected customer data 
+                        from <field name="transaction_count" readonly="1"/> transaction(s). This action cannot be undone.
+                        <br/><br/>
+                        <strong>What will be deleted:</strong>
+                        <ul class="mb-0">
+                            <li>Customer profile information (name, email, phone, address)</li>
+                            <li>Collection timestamps and scope information</li>
+                            <li>User consent records</li>
+                            <li>All associated metadata</li>
+                        </ul>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_delete_data" 
+                            string="Delete Data" 
+                            type="object" 
+                            class="btn-danger"
+                            invisible="not confirm_deletion"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Audit Log List View -->
+    <record id="view_vipps_data_audit_log_tree" model="ir.ui.view">
+        <field name="name">vipps.data.audit.log.list</field>
+        <field name="model">vipps.data.audit.log</field>
+        <field name="arch" type="xml">
+            <list default_order="action_date desc" create="false" edit="false">
+                <field name="action_date"/>
+                <field name="partner_id"/>
+                <field name="action_type"/>
+                <field name="user_id"/>
+                <field name="data_types"/>
+                <field name="legal_basis"/>
+                <field name="retention_period"/>
+                <field name="ip_address" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Audit Log Form View -->
+    <record id="view_vipps_data_audit_log_form" model="ir.ui.view">
+        <field name="name">vipps.data.audit.log.form</field>
+        <field name="model">vipps.data.audit.log</field>
+        <field name="arch" type="xml">
+            <form string="Audit Log Entry" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="action_type" readonly="1"/></h1>
+                        <p>Data processing audit log entry</p>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="action_date" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="transaction_id" readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="data_types" readonly="1"/>
+                            <field name="legal_basis" readonly="1"/>
+                            <field name="retention_period" readonly="1"/>
+                            <field name="ip_address" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Notes">
+                        <field name="notes" readonly="1" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Audit Log Search View -->
+    <record id="view_vipps_data_audit_log_search" model="ir.ui.view">
+        <field name="name">vipps.data.audit.log.search</field>
+        <field name="model">vipps.data.audit.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Audit Logs">
+                <field name="partner_id"/>
+                <field name="action_type"/>
+                <field name="user_id"/>
+                <field name="data_types"/>
+                <separator/>
+                <filter name="today" string="Today" 
+                        domain="[('action_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter name="this_week" string="This Week" 
+                        domain="[('action_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_month" string="This Month" 
+                        domain="[('action_date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="collection" string="Data Collection" 
+                        domain="[('action_type', '=', 'collection')]"/>
+                <filter name="access" string="Data Access" 
+                        domain="[('action_type', '=', 'access')]"/>
+                <filter name="export" string="Data Export" 
+                        domain="[('action_type', '=', 'export')]"/>
+                <filter name="deletion" string="Data Deletion" 
+                        domain="[('action_type', '=', 'deletion')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_partner" string="Customer" 
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_by_action_type" string="Action Type" 
+                            context="{'group_by': 'action_type'}"/>
+                    <filter name="group_by_user" string="User" 
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_by_date" string="Date" 
+                            context="{'group_by': 'action_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_vipps_data_audit_log" model="ir.actions.act_window">
+        <field name="name">Vipps Data Audit Log</field>
+        <field name="res_model">vipps.data.audit.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_this_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No audit log entries found
+            </p>
+            <p>
+                Audit logs are automatically created when customer data is collected, accessed, exported, or deleted.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_vipps_data_management"
+              name="Vipps Data Management"
+              parent="account.menu_finance_configuration"
+              sequence="101"/>
+
+    <menuitem id="menu_vipps_data_audit_log"
+              name="Data Audit Log"
+              parent="menu_vipps_data_management"
+              action="action_vipps_data_audit_log"
+              sequence="10"/>
+
+</odoo>

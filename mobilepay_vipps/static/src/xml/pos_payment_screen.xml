@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Main Vipps POS Payment Screen -->
+    <t t-name="VippsPOSPaymentScreen" owl="1">
+        <div class="vipps-pos-payment-screen">
+            
+            <!-- Flow Selection Step -->
+            <div t-if="state.currentStep === 'flow_selection'" class="payment-step flow-selection-step">
+                <div class="step-header">
+                    <div class="brand-header">
+                        <img src="/mobilepay_vipps/static/description/MP_logo_badge.svg" alt="Vipps/MobilePay" style="height:32px; width:auto; margin-right:8px; vertical-align:middle;"/>
+                        <h2 style="display:inline-block; vertical-align:middle; margin:0 0 0 4px;">Vipps/MobilePay Payment</h2>
+                    </div>
+                    <p>Choose how the customer will complete their payment</p>
+                </div>
+                
+                <div class="payment-flow-grid">
+                    <t t-foreach="getAvailableFlows()" t-as="flow" t-key="flow.code">
+                        <div class="payment-flow-card" 
+                             t-att-class="{'selected': state.selectedFlow === flow.code}"
+                             t-on-click="() => selectPaymentFlow(flow.code)"
+                             t-att-style="'border-color: ' + (state.selectedFlow === flow.code ? flow.color : '#e0e0e0')">
+                            <div class="flow-icon" t-att-style="'color: ' + flow.color">
+                                <i t-att-class="flow.icon + ' fa-2x'"></i>
+                            </div>
+                            <div class="flow-content">
+                                <h3 t-esc="flow.name"></h3>
+                                <p t-esc="flow.description"></p>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                
+                <!-- Phone Number Input Widget -->
+                <div t-if="state.selectedFlow === 'customer_phone'" class="phone-input-widget">
+                    <div class="input-group">
+                        <label for="customer-phone">
+                            <i class="fa fa-phone"></i> Customer Phone Number
+                        </label>
+                        <input type="tel" 
+                               id="customer-phone"
+                               class="form-control"
+                               placeholder="+47 12 34 56 78"
+                               t-att-value="state.customerPhone"
+                               t-on-input="onPhoneInputChange"
+                               maxlength="15"/>
+                        <div class="input-help">
+                            Enter Norwegian (+47) or Danish (+45) phone number
+                        </div>
+                    </div>
+                    <div t-if="state.phoneValidationMessage" class="validation-message error">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <span t-esc="state.phoneValidationMessage"></span>
+                    </div>
+                </div>
+                
+                <!-- Error Message -->
+                <div t-if="state.errorMessage" class="error-message">
+                    <i class="fa fa-exclamation-circle"></i>
+                    <span t-esc="state.errorMessage"></span>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="step-actions">
+                    <button class="btn btn-primary btn-lg" 
+                            t-on-click="startPayment"
+                            t-att-disabled="!canStartPayment() or state.isProcessing">
+                        <i class="fa fa-play"></i>
+                        <span t-if="!state.isProcessing">Start Payment</span>
+                        <span t-if="state.isProcessing">
+                            <i class="fa fa-spinner fa-spin"></i> Starting...
+                        </span>
+                    </button>
+                    <button class="btn btn-secondary btn-lg" 
+                            t-on-click="closePaymentScreen">
+                        <i class="fa fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Processing Step -->
+            <div t-if="state.currentStep === 'payment_processing'" class="payment-step processing-step">
+                <div class="step-header">
+                    <h2><i class="fa fa-clock-o"></i> Payment in Progress</h2>
+                    <div class="payment-timer">
+                        <span t-esc="formatTime(getRemainingTime())"></span> remaining
+                    </div>
+                </div>
+
+                <!-- QR Code Display Widget -->
+                <div t-if="state.selectedFlow === 'customer_qr' and state.qrCodeData" class="qr-code-widget">
+                    <div class="qr-code-container">
+                        <img t-att-src="'data:image/png;base64,' + state.qrCodeData" 
+                             alt="Payment QR Code"
+                             class="qr-code-image"/>
+                    </div>
+                    <div class="qr-instructions">
+                        <h3><i class="fa fa-qrcode"></i> Scan QR Code</h3>
+                        <p>Ask the customer to scan this QR code with their Vipps/MobilePay app</p>
+                    </div>
+                </div>
+
+                <!-- Phone Payment Widget -->
+                <div t-if="state.selectedFlow === 'customer_phone'" class="phone-payment-widget">
+                    <div class="phone-animation">
+                        <i class="fa fa-mobile fa-4x pulse"></i>
+                    </div>
+                    <div class="phone-instructions">
+                        <h3><i class="fa fa-paper-plane"></i> Push Message Sent</h3>
+                        <p>Push message sent to: <strong t-esc="state.customerPhone"></strong></p>
+                        <p>Ask the customer to check their phone and approve the payment</p>
+                    </div>
+                </div>
+
+                <!-- Manual Shop Number Widget -->
+                <div t-if="state.selectedFlow === 'manual_shop_number' and state.shopNumber" class="shop-number-widget">
+                    <div class="shop-number-display">
+                        <div class="shop-number-label">Shop Number</div>
+                        <div class="shop-number-value" t-esc="state.shopNumber"></div>
+                    </div>
+                    <div class="shop-instructions">
+                        <h3><i class="fa fa-keyboard-o"></i> Enter Shop Number</h3>
+                        <p>Ask the customer to:</p>
+                        <ol>
+                            <li>Open their Vipps/MobilePay app</li>
+                            <li>Select "Pay in Store"</li>
+                            <li>Enter the shop number: <strong t-esc="state.shopNumber"></strong></li>
+                            <li>Confirm the payment amount</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Manual Shop QR Widget -->
+                <div t-if="state.selectedFlow === 'manual_shop_qr' and state.shopQrCode" class="shop-qr-widget">
+                    <div class="shop-qr-container">
+                        <img t-att-src="'data:image/png;base64,' + state.shopQrCode" 
+                             alt="Shop QR Code"
+                             class="shop-qr-image"/>
+                    </div>
+                    <div class="shop-qr-instructions">
+                        <h3><i class="fa fa-qrcode"></i> Scan Shop QR Code</h3>
+                        <p>Ask the customer to scan this shop-specific QR code</p>
+                    </div>
+                </div>
+
+                <!-- Real-time Status Monitoring -->
+                <div class="payment-status-monitoring">
+                    <!-- Connection Status -->
+                    <div class="connection-status-bar">
+                        <t t-set="connectionInfo" t-value="getConnectionStatusInfo()"/>
+                        <div class="connection-indicator" t-att-style="'color: ' + connectionInfo.color">
+                            <i t-att-class="'fa ' + connectionInfo.icon"></i>
+                            <span t-esc="connectionInfo.text"></span>
+                        </div>
+                        <div class="last-check-time" t-if="state.lastStatusCheck">
+                            <small>Last check: <span t-esc="state.lastStatusCheck.toLocaleTimeString()"></span></small>
+                        </div>
+                        <button t-if="state.connectionStatus === 'error' or state.connectionStatus === 'disconnected'"
+                                class="btn btn-sm btn-outline-primary retry-btn"
+                                t-on-click="retryConnection">
+                            <i class="fa fa-refresh"></i> Retry
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" t-att-style="'width: ' + state.progressPercentage + '%'"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span class="progress-text" t-esc="state.progressMessage || 'Processing...'"></span>
+                            <span class="progress-percentage" t-esc="Math.round(state.progressPercentage) + '%'"></span>
+                        </div>
+                    </div>
+
+                    <!-- Time Information -->
+                    <div class="time-info-container">
+                        <div class="elapsed-time">
+                            <i class="fa fa-clock-o"></i>
+                            <span>Elapsed: <strong t-esc="formatTime(state.elapsedTime)"></strong></span>
+                        </div>
+                        <div class="remaining-time" t-if="state.estimatedTimeRemaining !== null">
+                            <i class="fa fa-hourglass-half"></i>
+                            <span>Remaining: <strong t-esc="formatTime(state.estimatedTimeRemaining)"></strong></span>
+                        </div>
+                        <div class="attempt-counter" t-if="state.paymentAttempts > 1">
+                            <i class="fa fa-repeat"></i>
+                            <span>Attempt: <strong t-esc="state.paymentAttempts"></strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Status Indicator -->
+                    <div class="payment-status-indicator">
+                        <div t-if="state.paymentStatus === 'waiting'" class="status-item status-waiting">
+                            <i class="fa fa-spinner fa-spin"></i>
+                            <span>Waiting for customer to complete payment...</span>
+                        </div>
+                        <div t-if="state.paymentStatus === 'processing'" class="status-item status-processing">
+                            <i class="fa fa-cog fa-spin"></i>
+                            <span>Processing payment...</span>
+                        </div>
+                    </div>
+
+                    <!-- Status History Button -->
+                    <div class="status-actions">
+                        <button class="btn btn-sm btn-outline-info" 
+                                t-on-click="showStatusHistory"
+                                t-if="state.statusHistory.length > 0">
+                            <i class="fa fa-history"></i>
+                            View Status History (<span t-esc="state.statusHistory.length"></span>)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Verification Interface for Manual Payments -->
+                <div t-if="state.selectedFlow.startsWith('manual_')" class="manual-verification-widget">
+                    <div class="verification-header">
+                        <h4><i class="fa fa-check-square-o"></i> Payment Verification</h4>
+                        <p>Verify with the customer that the payment has been completed</p>
+                    </div>
+                    <div class="verification-actions">
+                        <button class="btn btn-success btn-lg" 
+                                t-on-click="verifyManualPayment">
+                            <i class="fa fa-check"></i> Customer Confirmed Payment
+                        </button>
+                        <button class="btn btn-warning btn-lg" 
+                                t-on-click="requestPaymentProof">
+                            <i class="fa fa-eye"></i> Show Payment Proof
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="step-actions">
+                    <button class="btn btn-danger btn-lg" 
+                            t-on-click="cancelPayment">
+                        <i class="fa fa-times"></i> Cancel Payment
+                    </button>
+                    <button class="btn btn-secondary btn-lg" 
+                            t-on-click="resetToFlowSelection">
+                        <i class="fa fa-arrow-left"></i> Back
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Complete Step -->
+            <div t-if="state.currentStep === 'payment_complete'" class="payment-step complete-step">
+                <div class="completion-animation">
+                    <i class="fa fa-check-circle fa-5x text-success bounce"></i>
+                </div>
+                <div class="completion-message">
+                    <h2>Payment Completed!</h2>
+                    <p t-if="state.paymentStatus === 'completed'">
+                        The payment has been successfully processed.
+                    </p>
+                    <p t-if="state.paymentStatus === 'failed'" class="text-danger">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <span t-esc="state.errorMessage"></span>
+                    </p>
+                    <p t-if="state.paymentStatus === 'timeout'" class="text-warning">
+                        <i class="fa fa-clock-o"></i>
+                        Payment timed out and was cancelled.
+                    </p>
+                </div>
+
+                <!-- Receipt Preview -->
+                <div t-if="state.showReceiptPreview and state.receiptData" class="receipt-preview-container">
+                    <div class="receipt-preview">
+                        <div class="receipt-header">
+                            <h4><i class="fa fa-receipt"></i> Receipt Preview</h4>
+                        </div>
+                        <div class="receipt-content">
+                            <t t-foreach="state.receiptData.receipt_lines" t-as="line" t-key="line_index">
+                                <div t-if="line.type === 'header'" class="receipt-line receipt-header-line">
+                                    <strong t-esc="line.text"></strong>
+                                </div>
+                                <div t-if="line.type === 'line'" class="receipt-line receipt-data-line">
+                                    <span class="receipt-left" t-esc="line.left"></span>
+                                    <span class="receipt-right" t-esc="line.right"></span>
+                                </div>
+                                <div t-if="line.type === 'separator'" class="receipt-line receipt-separator">
+                                    <hr/>
+                                </div>
+                                <div t-if="line.type === 'footer'" class="receipt-line receipt-footer-line">
+                                    <em t-esc="line.text"></em>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="receipt-actions">
+                            <button class="btn btn-sm btn-secondary" 
+                                    t-on-click="() => this.state.showReceiptPreview = false">
+                                <i class="fa fa-times"></i> Close Preview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button class="btn btn-primary btn-lg" 
+                            t-on-click="closePaymentScreen">
+                        <i class="fa fa-check"></i> Continue
+                    </button>
+                    <button t-if="state.paymentStatus !== 'completed'" 
+                            class="btn btn-secondary btn-lg" 
+                            t-on-click="resetToFlowSelection">
+                        <i class="fa fa-refresh"></i> Try Again
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </t>
+
+    <!-- QR Code Display Component -->
+    <t t-name="VippsQRCodeDisplay" owl="1">
+        <div class="vipps-qr-display">
+            <div class="qr-container">
+                <img t-att-src="props.qrCodeData" alt="Payment QR Code"/>
+            </div>
+            <div class="qr-info">
+                <p><strong>Amount:</strong> <span t-esc="props.amount"></span></p>
+                <p><strong>Reference:</strong> <span t-esc="props.reference"></span></p>
+            </div>
+        </div>
+    </t>
+
+    <!-- Phone Input Component -->
+    <t t-name="VippsPhoneInput" owl="1">
+        <div class="vipps-phone-input">
+            <div class="phone-field">
+                <label>Customer Phone Number</label>
+                <input type="tel" 
+                       t-att-value="props.phoneNumber"
+                       t-on-input="props.onPhoneChange"
+                       placeholder="+47 12 34 56 78"/>
+            </div>
+            <div t-if="props.validationMessage" class="validation-error">
+                <span t-esc="props.validationMessage"></span>
+            </div>
+        </div>
+    </t>
+
+    <!-- Shop Number Display Component -->
+    <t t-name="VippsShopNumberDisplay" owl="1">
+        <div class="vipps-shop-number">
+            <div class="shop-number-card">
+                <div class="shop-number-label">Shop Number</div>
+                <div class="shop-number-value" t-esc="props.shopNumber"></div>
+            </div>
+            <div class="shop-instructions">
+                <p>Customer should enter this number in their Vipps/MobilePay app</p>
+            </div>
+        </div>
+    </t>
+
+</templates>

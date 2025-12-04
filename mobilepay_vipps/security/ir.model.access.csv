@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vipps_profile_scope,access.vipps.profile.scope,model_vipps_profile_scope,base.group_system,1,1,1,1
+access_vipps_profile_scope_wizard,access.vipps.profile.scope.wizard,model_vipps_profile_scope_wizard,base.group_user,1,1,1,1
+access_vipps_user_info_viewer,access.vipps.user.info.viewer,model_vipps_user_info_viewer,base.group_user,1,1,1,1
+access_vipps_credential_audit_log,access.vipps.credential.audit.log,model_vipps_credential_audit_log,base.group_system,1,0,1,0
+access_vipps_credential_rotation,access.vipps.credential.rotation,model_vipps_credential_rotation,base.group_system,1,1,1,1
+access_vipps_webhook_security_log,access.vipps.webhook.security.log,model_vipps_webhook_security_log,base.group_system,1,0,0,0
+access_vipps_data_retention_log,access.vipps.data.retention.log,model_vipps_data_retention_log,base.group_system,1,0,0,0
+access_vipps_data_export_wizard,access.vipps.data.export.wizard,model_vipps_data_export_wizard,base.group_user,1,1,1,1
+access_vipps_data_deletion_wizard,access.vipps.data.deletion.wizard,model_vipps_data_deletion_wizard,base.group_user,1,1,1,1
+access_payment_provider_audit,access.payment.provider.audit,model_payment_provider_audit,base.group_system,1,0,1,0
+access_vipps_data_audit_log,access.vipps.data.audit.log,model_vipps_data_audit_log,base.group_system,1,0,1,0
+access_vipps_onboarding_wizard,access.vipps.onboarding.wizard,model_vipps_onboarding_wizard,base.group_user,1,1,1,1

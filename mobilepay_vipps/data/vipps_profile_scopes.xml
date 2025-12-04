@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Default Profile Scopes -->
+        <record id="profile_scope_name" model="vipps.profile.scope">
+            <field name="name">Full Name</field>
+            <field name="technical_name">name</field>
+            <field name="description">Customer's full name</field>
+            <field name="sequence">10</field>
+            <field name="required_consent" eval="False"/>
+        </record>
+
+        <record id="profile_scope_email" model="vipps.profile.scope">
+            <field name="name">Email Address</field>
+            <field name="technical_name">email</field>
+            <field name="description">Customer's email address</field>
+            <field name="sequence">20</field>
+            <field name="required_consent" eval="False"/>
+        </record>
+
+        <record id="profile_scope_phone" model="vipps.profile.scope">
+            <field name="name">Phone Number</field>
+            <field name="technical_name">phoneNumber</field>
+            <field name="description">Customer's phone number</field>
+            <field name="sequence">30</field>
+            <field name="required_consent" eval="False"/>
+        </record>
+
+        <record id="profile_scope_address" model="vipps.profile.scope">
+            <field name="name">Address</field>
+            <field name="technical_name">address</field>
+            <field name="description">Customer's address information</field>
+            <field name="sequence">40</field>
+            <field name="required_consent" eval="False"/>
+        </record>
+
+        <record id="profile_scope_birthdate" model="vipps.profile.scope">
+            <field name="name">Birth Date</field>
+            <field name="technical_name">birthDate</field>
+            <field name="description">Customer's birth date</field>
+            <field name="sequence">50</field>
+            <field name="required_consent" eval="True"/>
+        </record>
+
+        <record id="profile_scope_nin" model="vipps.profile.scope">
+            <field name="name">National Identity Number</field>
+            <field name="technical_name">nin</field>
+            <field name="description">Customer's national identity number</field>
+            <field name="sequence">60</field>
+            <field name="required_consent" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

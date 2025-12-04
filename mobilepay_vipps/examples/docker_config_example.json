@@ -1,0 +1,150 @@
+{
+  "_comment": "Docker Configuration Example for Vipps/MobilePay Integration",
+  "_note": "Docker Compose configuration for containerized deployment",
+  
+  "version": "3.8",
+  
+  "services": {
+    "odoo": {
+      "image": "odoo:17.0",
+      "container_name": "vipps_odoo",
+      "restart": "unless-stopped",
+      "ports": ["8069:8069", "8072:8072"],
+      "environment": {
+        "HOST": "db",
+        "USER": "odoo",
+        "PASSWORD": "odoo_password"
+      },
+      "volumes": [
+        "./addons:/mnt/extra-addons",
+        "./config:/etc/odoo",
+        "odoo-data:/var/lib/odoo"
+      ],
+      "depends_on": ["db", "redis"],
+      "networks": ["vipps_network"],
+      "healthcheck": {
+        "test": ["CMD", "curl", "-f", "http://localhost:8069/web/health"],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3,
+        "start_period": "60s"
+      },
+      "deploy": {
+        "resources": {
+          "limits": {
+            "cpus": "2.0",
+            "memory": "4G"
+          },
+          "reservations": {
+            "cpus": "1.0", 
+            "memory": "2G"
+          }
+        }
+      }
+    },
+    
+    "db": {
+      "image": "postgres:15",
+      "container_name": "vipps_postgres",
+      "restart": "unless-stopped",
+      "environment": {
+        "POSTGRES_DB": "postgres",
+        "POSTGRES_USER": "odoo",
+        "POSTGRES_PASSWORD": "odoo_password",
+        "PGDATA": "/var/lib/postgresql/data/pgdata"
+      },
+      "volumes": [
+        "postgres-data:/var/lib/postgresql/data/pgdata",
+        "./backups:/backups"
+      ],
+      "networks": ["vipps_network"],
+      "healthcheck": {
+        "test": ["CMD-SHELL", "pg_isready -U odoo"],
+        "interval": "10s",
+        "timeout": "5s",
+        "retries": 5
+      }
+    },
+    
+    "redis": {
+      "image": "redis:7-alpine",
+      "container_name": "vipps_redis",
+      "restart": "unless-stopped",
+      "command": "redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru",
+      "volumes": ["redis-data:/data"],
+      "networks": ["vipps_network"],
+      "healthcheck": {
+        "test": ["CMD", "redis-cli", "ping"],
+        "interval": "10s",
+        "timeout": "3s",
+        "retries": 3
+      }
+    },
+    
+    "nginx": {
+      "image": "nginx:alpine",
+      "container_name": "vipps_nginx",
+      "restart": "unless-stopped",
+      "ports": ["80:80", "443:443"],
+      "volumes": [
+        "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro",
+        "./nginx/ssl:/etc/ssl:ro",
+        "./nginx/logs:/var/log/nginx"
+      ],
+      "depends_on": ["odoo"],
+      "networks": ["vipps_network"],
+      "healthcheck": {
+        "test": ["CMD", "nginx", "-t"],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    }
+  },
+  
+  "volumes": {
+    "odoo-data": {
+      "driver": "local"
+    },
+    "postgres-data": {
+      "driver": "local"
+    },
+    "redis-data": {
+      "driver": "local"
+    }
+  },
+  
+  "networks": {
+    "vipps_network": {
+      "driver": "bridge",
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.20.0.0/16"
+          }
+        ]
+      }
+    }
+  },
+  
+  "secrets": {
+    "vipps_client_secret": {
+      "file": "./secrets/vipps_client_secret.txt"
+    },
+    "mobilepay_client_secret": {
+      "file": "./secrets/mobilepay_client_secret.txt"
+    },
+    "webhook_secret": {
+      "file": "./secrets/webhook_secret.txt"
+    }
+  },
+  
+  "configs": {
+    "odoo_config": {
+      "file": "./config/odoo.conf"
+    },
+    "nginx_config": {
+      "file": "./nginx/nginx.conf"
+    }
+  }
+}

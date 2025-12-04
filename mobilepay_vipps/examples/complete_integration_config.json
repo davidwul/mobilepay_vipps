@@ -1,0 +1,286 @@
+{
+  "_comment": "Complete Vipps/MobilePay Integration Configuration",
+  "_description": "Comprehensive configuration covering all aspects of the integration",
+  "_version": "1.0.0",
+  "_last_updated": "2024-01-15",
+  
+  "integration_info": {
+    "name": "Vipps/MobilePay Payment Integration",
+    "version": "1.0.0",
+    "odoo_version": "17.0+",
+    "supported_countries": ["Norway", "Denmark", "Finland", "Sweden"],
+    "supported_currencies": ["NOK", "DKK", "EUR", "SEK"],
+    "supported_languages": ["en_US", "da_DK", "nb_NO", "fi_FI", "sv_SE"]
+  },
+  
+  "environments": {
+    "development": {
+      "odoo": {
+        "database_url": "postgresql://odoo:odoo@localhost:5432/vipps_dev",
+        "admin_password": "admin",
+        "workers": 2,
+        "log_level": "debug",
+        "data_dir": "/opt/odoo/dev_data"
+      },
+      "vipps": {
+        "environment": "test",
+        "base_url": "https://apitest.vipps.no",
+        "merchant_serial_number": "123456",
+        "webhook_url": "https://dev.your-domain.com/payment/vipps/webhook"
+      },
+      "mobilepay": {
+        "environment": "sandbox",
+        "denmark_base_url": "https://sandbox-api.mobilepay.dk",
+        "finland_base_url": "https://sandbox-api.mobilepay.fi",
+        "sweden_base_url": "https://sandbox-api.mobilepay.se"
+      },
+      "features": {
+        "mock_payments": true,
+        "debug_logging": true,
+        "test_mode": true
+      }
+    },
+    
+    "staging": {
+      "odoo": {
+        "database_url": "postgresql://odoo_staging:secure_password@localhost:5432/vipps_staging",
+        "workers": 3,
+        "log_level": "info",
+        "proxy_mode": true,
+        "ssl_enabled": true
+      },
+      "vipps": {
+        "environment": "test",
+        "base_url": "https://apitest.vipps.no",
+        "webhook_url": "https://staging.your-domain.com/payment/vipps/webhook"
+      },
+      "features": {
+        "backup_before_deploy": true,
+        "run_integration_tests": true,
+        "performance_monitoring": true
+      }
+    },
+    
+    "production": {
+      "odoo": {
+        "database_url": "postgresql://odoo_prod:production_password@localhost:5432/vipps_production",
+        "workers": 4,
+        "max_cron_threads": 2,
+        "log_level": "warn",
+        "proxy_mode": true,
+        "longpolling_port": 8072
+      },
+      "vipps": {
+        "environment": "production",
+        "base_url": "https://api.vipps.no",
+        "webhook_url": "https://your-domain.com/payment/vipps/webhook"
+      },
+      "mobilepay": {
+        "environment": "production",
+        "denmark_base_url": "https://api.mobilepay.dk",
+        "finland_base_url": "https://api.mobilepay.fi",
+        "sweden_base_url": "https://api.mobilepay.se"
+      },
+      "features": {
+        "high_availability": true,
+        "load_balancing": true,
+        "comprehensive_monitoring": true,
+        "automated_backups": true
+      }
+    }
+  },
+  
+  "payment_configuration": {
+    "capture_modes": {
+      "ecommerce": "manual",
+      "pos": "automatic",
+      "subscription": "automatic"
+    },
+    "supported_flows": {
+      "ecommerce": ["WEB_REDIRECT"],
+      "pos": ["QR", "PUSH_MESSAGE", "MANUAL_SHOP_NUMBER", "MANUAL_SHOP_QR"]
+    },
+    "timeout_settings": {
+      "payment_timeout": 300,
+      "webhook_timeout": 30,
+      "api_timeout": 60,
+      "polling_interval": 2
+    },
+    "retry_settings": {
+      "max_retries": 3,
+      "backoff_factor": 2,
+      "retry_statuses": [500, 502, 503, 504]
+    }
+  },
+  
+  "security_configuration": {
+    "encryption": {
+      "credentials_encryption": "AES-256",
+      "webhook_signature": "HMAC-SHA256",
+      "ssl_protocols": ["TLSv1.2", "TLSv1.3"]
+    },
+    "access_control": {
+      "webhook_ip_whitelist": ["213.52.3.0/24", "213.52.4.0/24"],
+      "admin_only_fields": ["client_secret", "webhook_secret", "access_token"],
+      "rate_limiting": {
+        "webhook_requests": "10r/s",
+        "api_requests": "100r/m"
+      }
+    },
+    "audit_logging": {
+      "credential_access": true,
+      "payment_operations": true,
+      "security_events": true,
+      "retention_days": 365
+    }
+  },
+  
+  "monitoring_configuration": {
+    "metrics": {
+      "payment_success_rate": true,
+      "payment_duration": true,
+      "webhook_processing_time": true,
+      "api_response_time": true,
+      "error_rates": true
+    },
+    "alerts": {
+      "payment_failure_threshold": 0.05,
+      "webhook_failure_threshold": 0.02,
+      "api_timeout_threshold": 5000,
+      "notification_channels": ["email", "slack"]
+    },
+    "dashboards": [
+      "Payment Performance Overview",
+      "Nordic Market Analytics",
+      "System Health Status",
+      "Security Events Monitor"
+    ]
+  },
+  
+  "compliance_configuration": {
+    "gdpr": {
+      "data_retention_days": 2555,
+      "consent_management": true,
+      "data_anonymization": true,
+      "right_to_be_forgotten": true
+    },
+    "pci_dss": {
+      "secure_data_storage": true,
+      "encrypted_transmission": true,
+      "access_logging": true,
+      "regular_security_testing": true
+    },
+    "regional_compliance": {
+      "norway": {
+        "financial_authority": "Finanstilsynet",
+        "data_localization": false,
+        "consumer_protection": true
+      },
+      "denmark": {
+        "financial_authority": "Finanstilsynet",
+        "data_localization": false,
+        "consumer_protection": true
+      },
+      "finland": {
+        "financial_authority": "FIN-FSA",
+        "data_localization": false,
+        "consumer_protection": true
+      },
+      "sweden": {
+        "financial_authority": "Finansinspektionen",
+        "data_localization": false,
+        "consumer_protection": true
+      }
+    }
+  },
+  
+  "deployment_configuration": {
+    "infrastructure": {
+      "load_balancer": "nginx",
+      "database": "postgresql-15",
+      "cache": "redis",
+      "monitoring": "prometheus+grafana",
+      "logging": "elk-stack"
+    },
+    "scaling": {
+      "min_workers": 2,
+      "max_workers": 8,
+      "auto_scaling": true,
+      "cpu_threshold": 70,
+      "memory_threshold": 80
+    },
+    "backup_strategy": {
+      "database_backup": "daily",
+      "filestore_backup": "daily",
+      "config_backup": "weekly",
+      "offsite_replication": true,
+      "retention_policy": "90_days"
+    }
+  },
+  
+  "integration_testing": {
+    "test_scenarios": [
+      "ecommerce_payment_flow",
+      "pos_qr_payment",
+      "pos_phone_payment",
+      "manual_verification_flow",
+      "webhook_processing",
+      "error_handling",
+      "security_validation"
+    ],
+    "test_data": {
+      "test_phone_numbers": [
+        "+4712345678",
+        "+4587654321", 
+        "+358401234567",
+        "+46701234567"
+      ],
+      "test_amounts": [100, 250, 500, 1000, 2500],
+      "test_currencies": ["NOK", "DKK", "EUR", "SEK"]
+    },
+    "performance_targets": {
+      "payment_creation_time": "< 2s",
+      "webhook_processing_time": "< 500ms",
+      "api_response_time": "< 1s",
+      "concurrent_users": 500
+    }
+  },
+  
+  "maintenance_configuration": {
+    "update_schedule": {
+      "security_patches": "immediate",
+      "feature_updates": "monthly",
+      "major_versions": "quarterly"
+    },
+    "health_checks": {
+      "api_connectivity": "every_5_minutes",
+      "database_health": "every_10_minutes",
+      "webhook_endpoint": "every_15_minutes",
+      "certificate_expiry": "daily"
+    },
+    "maintenance_windows": {
+      "preferred_time": "02:00-04:00_CET",
+      "notification_advance": "24_hours",
+      "rollback_plan": "automated"
+    }
+  },
+  
+  "support_configuration": {
+    "documentation": {
+      "user_manual": "docs/user-manual.md",
+      "admin_guide": "docs/admin-guide.md",
+      "api_reference": "docs/api-integration.md",
+      "troubleshooting": "docs/troubleshooting.md"
+    },
+    "contact_information": {
+      "technical_support": "support@your-company.com",
+      "emergency_contact": "+47-xxx-xxx-xxx",
+      "documentation_updates": "docs@your-company.com"
+    },
+    "sla_targets": {
+      "response_time": "4_hours",
+      "resolution_time": "24_hours",
+      "uptime_guarantee": "99.9%"
+    }
+  }
+}

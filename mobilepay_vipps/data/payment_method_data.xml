@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Default Payment Provider (disabled by default, will be configured by user) -->
+        <record id="payment_provider_vipps_mobilepay" model="payment.provider">
+            <field name="name">Vipps/MobilePay</field>
+            <field name="code">vipps</field>
+            <field name="state">disabled</field>
+            <field name="is_published" eval="False"/>
+            <!-- Provide default values for required fields to avoid validation errors -->
+            <field name="vipps_merchant_serial_number">000000</field>
+            <field name="vipps_client_id">placeholder</field>
+            <field name="vipps_environment">test</field>
+            <!-- Set official Vipps/MobilePay approved logo on the provider record -->
+	    <field name="image_128" type="base64" file="mobilepay_vipps/static/description/vipps_mobilepay_logo.svg"/>
+        </record>
+
+
+        
+    </data>
+</odoo>

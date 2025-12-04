@@ -1,0 +1,117 @@
+{
+  "_comment": "Nginx Configuration Example for Vipps/MobilePay Integration",
+  "_note": "Example nginx configuration for production deployment with SSL and load balancing",
+  
+  "server_config": {
+    "server_name": "your-domain.com www.your-domain.com",
+    "listen_ports": [80, 443],
+    "ssl_enabled": true,
+    "ssl_certificate": "/etc/ssl/certs/your-domain.crt",
+    "ssl_certificate_key": "/etc/ssl/private/your-domain.key",
+    "ssl_protocols": ["TLSv1.2", "TLSv1.3"],
+    "ssl_ciphers": "ECDHE+AESGCM:ECDHE+CHACHA20:DHE+AESGCM:DHE+CHACHA20:!aNULL:!MD5:!DSS"
+  },
+  
+  "upstream_servers": [
+    {
+      "name": "odoo_backend",
+      "servers": [
+        "127.0.0.1:8069 weight=1 max_fails=3 fail_timeout=30s",
+        "127.0.0.1:8070 weight=1 max_fails=3 fail_timeout=30s backup"
+      ],
+      "keepalive": 32,
+      "least_conn": true
+    },
+    {
+      "name": "odoo_longpolling",
+      "servers": [
+        "127.0.0.1:8072 weight=1 max_fails=3 fail_timeout=30s"
+      ],
+      "keepalive": 16
+    }
+  ],
+  
+  "proxy_settings": {
+    "proxy_read_timeout": 120,
+    "proxy_connect_timeout": 5,
+    "proxy_send_timeout": 5,
+    "proxy_next_upstream": "error timeout invalid_header http_500 http_502 http_503",
+    "proxy_redirect": "off",
+    "proxy_buffering": "on",
+    "proxy_buffer_size": "128k",
+    "proxy_buffers": "4 256k",
+    "proxy_busy_buffers_size": "256k"
+  },
+  
+  "security_headers": {
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:",
+    "Referrer-Policy": "strict-origin-when-cross-origin"
+  },
+  
+  "rate_limiting": {
+    "enabled": true,
+    "zone_name": "vipps_api",
+    "zone_size": "10m",
+    "rate": "10r/s",
+    "burst": 20,
+    "nodelay": true
+  },
+  
+  "locations": {
+    "/payment/vipps/webhook": {
+      "description": "Vipps webhook endpoint",
+      "proxy_pass": "http://odoo_backend",
+      "rate_limit": "5r/s",
+      "allowed_methods": ["POST"],
+      "client_max_body_size": "1m",
+      "access_log": "/var/log/nginx/vipps_webhook.log"
+    },
+    "/payment/mobilepay/webhook": {
+      "description": "MobilePay webhook endpoint", 
+      "proxy_pass": "http://odoo_backend",
+      "rate_limit": "5r/s",
+      "allowed_methods": ["POST"],
+      "client_max_body_size": "1m",
+      "access_log": "/var/log/nginx/mobilepay_webhook.log"
+    },
+    "/longpolling": {
+      "description": "Odoo longpolling",
+      "proxy_pass": "http://odoo_longpolling",
+      "proxy_set_header": {
+        "Upgrade": "$http_upgrade",
+        "Connection": "$connection_upgrade"
+      }
+    },
+    "/web/static": {
+      "description": "Static assets",
+      "expires": "1y",
+      "add_header": "Cache-Control public",
+      "access_log": "off"
+    }
+  },
+  
+  "logging": {
+    "access_log": "/var/log/nginx/odoo_access.log",
+    "error_log": "/var/log/nginx/odoo_error.log warn",
+    "log_format": "$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" $request_time"
+  },
+  
+  "gzip": {
+    "enabled": true,
+    "comp_level": 6,
+    "min_length": 1000,
+    "types": [
+      "text/plain",
+      "text/css", 
+      "text/xml",
+      "text/javascript",
+      "application/javascript",
+      "application/xml+rss",
+      "application/json"
+    ]
+  }
+}

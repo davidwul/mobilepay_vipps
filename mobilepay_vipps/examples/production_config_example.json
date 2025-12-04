@@ -1,0 +1,141 @@
+{
+  "_comment": "Vipps/MobilePay Production Configuration Example",
+  "_note": "Replace all placeholder values with your actual production credentials",
+  
+  "odoo": {
+    "version": "17.0",
+    "database_url": "postgresql://odoo_user:your_secure_password@localhost:5432/production_db",
+    "admin_password": "your_secure_admin_password",
+    "workers": 4,
+    "max_cron_threads": 2,
+    "data_dir": "/opt/odoo/data",
+    "log_level": "info",
+    "proxy_mode": true,
+    "longpolling_port": 8072
+  },
+  
+  "vipps": {
+    "environment": "production",
+    "base_url": "https://api.vipps.no",
+    "merchant_serial_number": "123456",
+    "client_id": "your_production_client_id",
+    "client_secret": "your_production_client_secret",
+    "subscription_key": "your_production_subscription_key",
+    "webhook_url": "https://your-domain.com/payment/vipps/webhook",
+    "webhook_secret": "your_webhook_secret_minimum_32_characters_long_and_secure"
+  },
+  
+  "mobilepay": {
+    "denmark": {
+      "environment": "production",
+      "base_url": "https://api.mobilepay.dk",
+      "merchant_id": "your_dk_merchant_id",
+      "client_id": "your_dk_client_id",
+      "client_secret": "your_dk_client_secret",
+      "subscription_key": "your_dk_subscription_key"
+    },
+    "finland": {
+      "environment": "production", 
+      "base_url": "https://api.mobilepay.fi",
+      "merchant_id": "your_fi_merchant_id",
+      "client_id": "your_fi_client_id",
+      "client_secret": "your_fi_client_secret",
+      "subscription_key": "your_fi_subscription_key"
+    },
+    "sweden": {
+      "environment": "production",
+      "base_url": "https://api.mobilepay.se", 
+      "merchant_id": "your_se_merchant_id",
+      "client_id": "your_se_client_id",
+      "client_secret": "your_se_client_secret",
+      "subscription_key": "your_se_subscription_key"
+    }
+  },
+  
+  "infrastructure": {
+    "ssl_enabled": true,
+    "domain": "your-production-domain.com",
+    "load_balancer": true,
+    "cdn_enabled": true,
+    "backup_enabled": true,
+    "nginx_enabled": true,
+    "nginx_config": "/etc/nginx/sites-available/odoo-production"
+  },
+  
+  "monitoring": {
+    "enabled": true,
+    "log_level": "INFO",
+    "metrics_enabled": true,
+    "alerting_enabled": true,
+    "log_retention_days": 90,
+    "monitoring_tools": ["prometheus", "grafana", "elk"],
+    "health_check_interval": 60,
+    "alert_email": "alerts@your-company.com"
+  },
+  
+  "security": {
+    "firewall_enabled": true,
+    "intrusion_detection": true,
+    "vulnerability_scanning": true,
+    "penetration_testing": true,
+    "fail2ban_enabled": true,
+    "ssl_protocols": ["TLSv1.2", "TLSv1.3"],
+    "cipher_suites": "ECDHE+AESGCM:ECDHE+CHACHA20:DHE+AESGCM:DHE+CHACHA20:!aNULL:!MD5:!DSS",
+    "security_headers": true
+  },
+  
+  "performance": {
+    "max_concurrent_users": 500,
+    "response_time_threshold": 1.5,
+    "memory_limit": "8GB",
+    "cpu_limit": "80%",
+    "database_connections": 200,
+    "worker_timeout": 120,
+    "cache_enabled": true,
+    "compression_enabled": true
+  },
+  
+  "backup": {
+    "database_backup_frequency": "daily",
+    "file_backup_frequency": "daily", 
+    "backup_retention_days": 90,
+    "offsite_backup": true,
+    "backup_encryption": true,
+    "backup_location": "/backup/odoo/",
+    "offsite_location": "s3://your-backup-bucket/odoo/"
+  },
+  
+  "compliance": {
+    "gdpr_enabled": true,
+    "pci_dss_compliant": true,
+    "data_retention_days": 2555,
+    "audit_logging": true,
+    "encryption_at_rest": true,
+    "encryption_in_transit": true,
+    "data_anonymization": true,
+    "consent_management": true
+  },
+  
+  "supported_countries": {
+    "norway": {
+      "currency": "NOK",
+      "payment_methods": ["vipps"],
+      "language": "nb_NO"
+    },
+    "denmark": {
+      "currency": "DKK", 
+      "payment_methods": ["mobilepay"],
+      "language": "da_DK"
+    },
+    "finland": {
+      "currency": "EUR",
+      "payment_methods": ["mobilepay"],
+      "language": "fi_FI"
+    },
+    "sweden": {
+      "currency": "SEK",
+      "payment_methods": ["mobilepay"],
+      "language": "sv_SE"
+    }
+  }
+}

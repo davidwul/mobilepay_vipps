@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Credential Audit Log Views -->
+    <record id="vipps_credential_audit_log_tree" model="ir.ui.view">
+        <field name="name">vipps.credential.audit.log.list</field>
+        <field name="model">vipps.credential.audit.log</field>
+        <field name="arch" type="xml">
+            <list default_order="create_date desc" decoration-danger="success == False" decoration-warning="risk_level == 'high'" decoration-info="risk_level == 'critical'">
+                <field name="create_date"/>
+                <field name="action_type"/>
+                <field name="field_name"/>
+                <field name="user_id"/>
+                <field name="access_level"/>
+                <field name="risk_level"/>
+                <field name="success"/>
+                <field name="ip_address"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vipps_credential_audit_log_form" model="ir.ui.view">
+        <field name="name">vipps.credential.audit.log.form</field>
+        <field name="model">vipps.credential.audit.log</field>
+        <field name="arch" type="xml">
+            <form string="Credential Audit Log Entry" create="false" edit="false">
+                <header>
+                    <field name="success" widget="boolean_button" options="{'terminology': {'string_true': 'Success', 'string_false': 'Failed'}}"/>
+                    <field name="risk_level" widget="badge" decoration-success="risk_level == 'low'" decoration-info="risk_level == 'medium'" decoration-warning="risk_level == 'high'" decoration-danger="risk_level == 'critical'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Action Details">
+                            <field name="action_type"/>
+                            <field name="field_name"/>
+                            <field name="create_date"/>
+                            <field name="provider_id"/>
+                        </group>
+                        <group string="User Information">
+                            <field name="user_id"/>
+                            <field name="access_level"/>
+                            <field name="session_id"/>
+                            <field name="ip_address"/>
+                            <field name="user_agent"/>
+                        </group>
+                    </group>
+                    <group string="Additional Information" invisible="not additional_info">
+                        <field name="additional_info" nolabel="1"/>
+                    </group>
+                    <group string="Error Details" invisible="not error_message">
+                        <field name="error_message" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vipps_credential_audit_log_search" model="ir.ui.view">
+        <field name="name">vipps.credential.audit.log.search</field>
+        <field name="model">vipps.credential.audit.log</field>
+        <field name="arch" type="xml">
+            <search string="Credential Audit Log">
+                <field name="action_type"/>
+                <field name="field_name"/>
+                <field name="user_id"/>
+                <field name="provider_id"/>
+                <filter string="Failed Actions" name="failed" domain="[('success', '=', False)]"/>
+                <filter string="High Risk" name="high_risk" domain="[('risk_level', 'in', ['high', 'critical'])]"/>
+                <filter string="Today" name="today" domain="[('create_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter string="This Week" name="this_week" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Action Type" name="group_action_type" context="{'group_by': 'action_type'}"/>
+                    <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Risk Level" name="group_risk" context="{'group_by': 'risk_level'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_vipps_credential_audit_log" model="ir.actions.act_window">
+        <field name="name">Credential Audit Log</field>
+        <field name="res_model">vipps.credential.audit.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="vipps_credential_audit_log_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <!-- Credential Rotation Views -->
+    <record id="vipps_credential_rotation_tree" model="ir.ui.view">
+        <field name="name">vipps.credential.rotation.list</field>
+        <field name="model">vipps.credential.rotation</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'overdue'" decoration-warning="status == 'pending'">
+                <field name="provider_id"/>
+                <field name="credential_type"/>
+                <field name="rotation_frequency"/>
+                <field name="last_rotation_date"/>
+                <field name="next_rotation_date"/>
+                <field name="status"/>
+                <field name="auto_rotate"/>
+                <button name="action_rotate_credentials" string="Rotate Now" type="object" class="btn-primary" invisible="status not in ['pending', 'overdue']"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vipps_credential_rotation_form" model="ir.ui.view">
+        <field name="name">vipps.credential.rotation.form</field>
+        <field name="model">vipps.credential.rotation</field>
+        <field name="arch" type="xml">
+            <form string="Credential Rotation Configuration">
+                <header>
+                    <button name="action_rotate_credentials" string="Rotate Credentials" type="object" class="btn-primary" invisible="status not in ['pending', 'overdue']"/>
+                    <field name="status" widget="badge" decoration-success="status == 'active'" decoration-info="status == 'disabled'" decoration-warning="status == 'pending'" decoration-danger="status == 'overdue'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Configuration">
+                            <field name="provider_id"/>
+                            <field name="credential_type"/>
+                            <field name="rotation_frequency"/>
+                            <field name="auto_rotate"/>
+                            <field name="notification_days"/>
+                        </group>
+                        <group string="Schedule">
+                            <field name="last_rotation_date"/>
+                            <field name="next_rotation_date"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" invisible="auto_rotate">
+                        <strong>Manual Rotation:</strong> Credentials will not be automatically rotated. 
+                        You will receive notifications when rotation is due, but must manually trigger the rotation.
+                    </div>
+                    <div class="alert alert-warning" invisible="not auto_rotate">
+                        <strong>Automatic Rotation:</strong> Credentials will be automatically rotated according to the schedule. 
+                        Ensure you have proper backup and rollback procedures in place.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vipps_credential_rotation_search" model="ir.ui.view">
+        <field name="name">vipps.credential.rotation.search</field>
+        <field name="model">vipps.credential.rotation</field>
+        <field name="arch" type="xml">
+            <search string="Credential Rotation">
+                <field name="provider_id"/>
+                <field name="credential_type"/>
+                <filter string="Overdue" name="overdue" domain="[('status', '=', 'overdue')]"/>
+                <filter string="Pending" name="pending" domain="[('status', '=', 'pending')]"/>
+                <filter string="Auto Rotate" name="auto_rotate" domain="[('auto_rotate', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Provider" name="group_provider" context="{'group_by': 'provider_id'}"/>
+                    <filter string="Credential Type" name="group_type" context="{'group_by': 'credential_type'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_vipps_credential_rotation" model="ir.actions.act_window">
+        <field name="name">Credential Rotation</field>
+        <field name="res_model">vipps.credential.rotation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="vipps_credential_rotation_search"/>
+        <field name="context">{'search_default_pending': 1, 'search_default_overdue': 1}</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_vipps_security" 
+              name="Security" 
+              parent="account.menu_finance_configuration" 
+              sequence="100" 
+              groups="base.group_system"/>
+
+    <menuitem id="menu_vipps_credential_audit_log" 
+              name="Credential Audit Log" 
+              parent="menu_vipps_security" 
+              action="action_vipps_credential_audit_log" 
+              sequence="10"/>
+
+    <menuitem id="menu_vipps_credential_rotation" 
+              name="Credential Rotation" 
+              parent="menu_vipps_security" 
+              action="action_vipps_credential_rotation" 
+              sequence="20"/>
+
+    <!-- Webhook Security Log Views -->
+    <record id="vipps_webhook_security_log_tree" model="ir.ui.view">
+        <field name="name">vipps.webhook.security.log.list</field>
+        <field name="model">vipps.webhook.security.log</field>
+        <field name="arch" type="xml">
+            <list default_order="create_date desc" 
+                  decoration-danger="severity == 'critical'" 
+                  decoration-warning="severity == 'high'" 
+                  decoration-info="severity == 'medium'"
+                  decoration-muted="severity == 'info'">
+                <field name="create_date"/>
+                <field name="event_type"/>
+                <field name="severity"/>
+                <field name="client_ip"/>
+                <field name="provider_id"/>
+                <field name="is_blocked"/>
+                <field name="details"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vipps_webhook_security_log_form" model="ir.ui.view">
+        <field name="name">vipps.webhook.security.log.form</field>
+        <field name="model">vipps.webhook.security.log</field>
+        <field name="arch" type="xml">
+            <form string="Webhook Security Log Entry" create="false" edit="false">
+                <header>
+                    <field name="severity" widget="badge" 
+                           decoration-success="severity == 'info'" 
+                           decoration-info="severity == 'medium'" 
+                           decoration-warning="severity == 'high'" 
+                           decoration-danger="severity == 'critical'"/>
+                    <field name="is_blocked" widget="boolean_button" 
+                           options="{'terminology': {'string_true': 'Blocked', 'string_false': 'Allowed'}}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Event Details">
+                            <field name="event_type"/>
+                            <field name="create_date"/>
+                            <field name="provider_id"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group string="Request Information">
+                            <field name="client_ip"/>
+                        </group>
+                    </group>
+                    <group string="Event Details">
+                        <field name="details" nolabel="1"/>
+                    </group>
+                    <group string="Raw Event Data" invisible="not event_data">
+                        <field name="event_data" nolabel="1" widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vipps_webhook_security_log_search" model="ir.ui.view">
+        <field name="name">vipps.webhook.security.log.search</field>
+        <field name="model">vipps.webhook.security.log</field>
+        <field name="arch" type="xml">
+            <search string="Webhook Security Log">
+                <field name="event_type"/>
+                <field name="client_ip"/>
+                <field name="provider_id"/>
+                <filter string="Critical Events" name="critical" domain="[('severity', '=', 'critical')]"/>
+                <filter string="High Severity" name="high" domain="[('severity', '=', 'high')]"/>
+                <filter string="Blocked Requests" name="blocked" domain="[('is_blocked', '=', True)]"/>
+                <filter string="Today" name="today" domain="[('create_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter string="This Week" name="this_week" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Event Type" name="group_event_type" context="{'group_by': 'event_type'}"/>
+                    <filter string="Severity" name="group_severity" context="{'group_by': 'severity'}"/>
+                    <filter string="Client IP" name="group_ip" context="{'group_by': 'client_ip'}"/>
+                    <filter string="Provider" name="group_provider" context="{'group_by': 'provider_id'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_vipps_webhook_security_log" model="ir.actions.act_window">
+        <field name="name">Webhook Security Log</field>
+        <field name="res_model">vipps.webhook.security.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="vipps_webhook_security_log_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <menuitem id="menu_vipps_webhook_security_log" 
+              name="Webhook Security Log" 
+              parent="menu_vipps_security" 
+              action="action_vipps_webhook_security_log" 
+              sequence="30"/>
+
+    <!-- Data Retention Log Views -->
+    <record id="vipps_data_retention_log_tree" model="ir.ui.view">
+        <field name="name">vipps.data.retention.log.list</field>
+        <field name="model">vipps.data.retention.log</field>
+        <field name="arch" type="xml">
+            <list default_order="create_date desc" 
+                  decoration-success="status == 'completed'" 
+                  decoration-warning="status == 'completed_with_warnings'" 
+                  decoration-danger="status == 'failed'">
+                <field name="enforcement_date"/>
+                <field name="status"/>
+                <field name="actions_performed"/>
+                <field name="errors_encountered"/>
+                <field name="transactions_cleaned"/>
+                <field name="profiles_cleaned"/>
+                <field name="logs_deleted"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vipps_data_retention_log_form" model="ir.ui.view">
+        <field name="name">vipps.data.retention.log.form</field>
+        <field name="model">vipps.data.retention.log</field>
+        <field name="arch" type="xml">
+            <form string="Data Retention Log Entry" create="false" edit="false">
+                <header>
+                    <field name="status" widget="badge" 
+                           decoration-success="status == 'completed'" 
+                           decoration-warning="status == 'completed_with_warnings'" 
+                           decoration-danger="status == 'failed'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Enforcement Details">
+                            <field name="enforcement_date"/>
+                            <field name="actions_performed"/>
+                            <field name="errors_encountered"/>
+                        </group>
+                        <group string="Cleanup Statistics">
+                            <field name="transactions_cleaned"/>
+                            <field name="profiles_cleaned"/>
+                            <field name="logs_deleted"/>
+                        </group>
+                    </group>
+                    <group string="Notes" invisible="not notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                    <group string="Detailed Report" invisible="not enforcement_report">
+                        <field name="enforcement_report" nolabel="1" widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vipps_data_retention_log_search" model="ir.ui.view">
+        <field name="name">vipps.data.retention.log.search</field>
+        <field name="model">vipps.data.retention.log</field>
+        <field name="arch" type="xml">
+            <search string="Data Retention Log">
+                <field name="enforcement_date"/>
+                <field name="status"/>
+                <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                <filter string="With Warnings" name="warnings" domain="[('status', '=', 'completed_with_warnings')]"/>
+                <filter string="Failed" name="failed" domain="[('status', '=', 'failed')]"/>
+                <filter string="This Month" name="this_month" domain="[('enforcement_date', '&gt;=', datetime.datetime.combine(context_today().replace(day=1), datetime.time(0,0,0)))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'enforcement_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_vipps_data_retention_log" model="ir.actions.act_window">
+        <field name="name">Data Retention Log</field>
+        <field name="res_model">vipps.data.retention.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="vipps_data_retention_log_search"/>
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+
+    <menuitem id="menu_vipps_data_retention_log" 
+              name="Data Retention Log" 
+              parent="menu_vipps_security" 
+              action="action_vipps_data_retention_log" 
+              sequence="40"/>
+
+</odoo>

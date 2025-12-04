@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vipps/MobilePay Landing Page Redirect Template -->
+        <!-- This template is not used with direct redirect actions -->
+        <template id="vipps_redirect_form" name="Vipps/MobilePay Redirect">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h4>Redirecting to Vipps/MobilePay...</h4>
+                    <p>You will be redirected automatically to complete your payment.</p>
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Redirecting...</span>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </data>
+</odoo>

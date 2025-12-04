@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Partner Form View Extension for Vipps Data Management -->
+    <record id="view_partner_form_vipps_data" model="ir.ui.view">
+        <field name="name">res.partner.form.vipps.data</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Vipps Data" name="vipps_data" 
+                      invisible="not vipps_user_info_collected">
+                    <group>
+                        <group string="Data Collection Status">
+                            <field name="vipps_user_info_collected" readonly="1"/>
+                            <field name="vipps_data_collection_count" readonly="1"/>
+                            <field name="vipps_last_data_collection" readonly="1"/>
+                        </group>
+                        <group string="Consent Management">
+                            <field name="vipps_data_consent_given"/>
+                            <field name="vipps_data_consent_date" readonly="1"/>
+                            <field name="vipps_opt_out_date" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_vipps_data_collections" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-list"
+                                invisible="vipps_data_collection_count == 0">
+                            <field name="vipps_data_collection_count" widget="statinfo" 
+                                   string="Collections"/>
+                        </button>
+                    </div>
+                    
+                    <group string="Data Management Actions">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button name="action_export_vipps_data" 
+                                        string="Export Customer Data" 
+                                        type="object" 
+                                        class="btn btn-secondary"
+                                        invisible="not vipps_user_info_collected"
+                                        help="Export all collected Vipps data for GDPR compliance"/>
+                            </div>
+                            <div class="col-md-6">
+                                <button name="action_delete_vipps_data" 
+                                        string="Delete Customer Data" 
+                                        type="object" 
+                                        class="btn btn-danger"
+                                        invisible="not vipps_user_info_collected"
+                                        help="Permanently delete all collected Vipps data"/>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <button name="action_give_data_consent" 
+                                        string="Record Consent" 
+                                        type="object" 
+                                        class="btn btn-success"
+                                        invisible="vipps_data_consent_given"
+                                        help="Record customer consent for data collection"/>
+                            </div>
+                            <div class="col-md-6">
+                                <button name="action_opt_out_data_collection" 
+                                        string="Opt Out" 
+                                        type="object" 
+                                        class="btn btn-warning"
+                                        invisible="not vipps_data_consent_given"
+                                        help="Opt customer out of future data collection"/>
+                            </div>
+                        </div>
+                    </group>
+                    
+                    <div class="alert alert-info mt-3" role="alert">
+                        <strong>Data Protection Notice:</strong>
+                        <ul class="mb-0">
+                            <li>Customer data is collected with explicit consent during Vipps/MobilePay payments</li>
+                            <li>Data is retained according to configured retention policies</li>
+                            <li>Customers have the right to access, export, and delete their data</li>
+                            <li>All data operations are logged for audit purposes</li>
+                        </ul>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Partner List View Extension -->
+    <record id="view_partner_tree_vipps_data" model="ir.ui.view">
+        <field name="name">res.partner.list.vipps.data</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="after">
+                <field name="vipps_user_info_collected" optional="hide"/>
+                <field name="vipps_data_consent_given" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Partner Search View Extension -->
+    <record id="view_partner_search_vipps_data" model="ir.ui.view">
+        <field name="name">res.partner.search.vipps.data</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='supplier']" position="after">
+                <separator/>
+                <filter name="vipps_data_collected" 
+                        string="Has Vipps Data" 
+                        domain="[('vipps_user_info_collected', '=', True)]"/>
+                <filter name="vipps_consent_given" 
+                        string="Consent Given" 
+                        domain="[('vipps_data_consent_given', '=', True)]"/>
+                <filter name="vipps_opted_out" 
+                        string="Opted Out" 
+                        domain="[('vipps_opt_out_date', '!=', False)]"/>
+            </xpath>
+            <xpath expr="//group[@name='group_by']" position="inside">
+                <filter name="group_by_vipps_consent" 
+                        string="Vipps Consent Status" 
+                        context="{'group_by': 'vipps_data_consent_given'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

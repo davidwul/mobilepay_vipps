@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vipps_profile_scope_wizard_form_view" model="ir.ui.view">
+        <field name="name">vipps.profile.scope.wizard.form</field>
+        <field name="model">vipps.profile.scope.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Configure Profile Scopes">
+                <group>
+                    <field name="provider_id" invisible="1"/>
+                    <field name="profile_scope" widget="radio"/>
+                    <field name="custom_scopes" widget="many2many_tags"
+                           invisible="profile_scope != 'custom'"/>
+                    <field name="data_retention_days"/>
+                    <field name="auto_update_partners"/>
+                    <field name="require_consent"/>
+                </group>
+                <footer>
+                    <button name="action_apply_configuration" string="Apply" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

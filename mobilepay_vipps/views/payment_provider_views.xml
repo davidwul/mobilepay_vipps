@@ -1,0 +1,243 @@
+<odoo>
+    <record id="payment_provider_form_vipps" model="ir.ui.view">
+        <field name="name">payment.provider.form.vipps</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <!-- Publish toggle for eCommerce availability -->
+                <field name="is_published" widget="boolean_toggle"/>
+            </xpath>
+            <xpath expr="//field[@name='code']" position="after">
+                <div invisible="code != 'vipps'">
+                    
+                    <!-- Environment Selection -->
+                    <group string="Environment Configuration">
+                        <field name="vipps_environment" widget="radio" options="{'horizontal': true}"/>
+                        <div colspan="2" class="alert alert-info" role="alert" invisible="vipps_environment != 'test'">
+                            <strong>Test Environment:</strong> Use this for development and testing. 
+                            Test payments will not process real money.
+                        </div>
+                        <div colspan="2" class="alert alert-warning" role="alert" invisible="vipps_environment != 'production'">
+                            <strong>Production Environment:</strong> Real payments will be processed. 
+                            Ensure all testing is complete before enabling.
+                        </div>
+                    </group>
+
+                    <!-- API Credentials -->
+                    <group string="API Credentials" col="2" groups="base.group_system">
+                        <field name="vipps_merchant_serial_number" 
+                               placeholder="e.g., 123456"
+                               help="Your Merchant Serial Number from Vipps/MobilePay portal"/>
+                        <field name="vipps_subscription_key" 
+                               password="True"
+                               placeholder="Your subscription key"
+                               help="Ocp-Apim-Subscription-Key from Vipps/MobilePay portal (automatically encrypted)"/>
+                        <field name="vipps_client_id" 
+                               placeholder="Your client ID"
+                               help="Client ID for access token generation"/>
+                        <field name="vipps_client_secret" 
+                               password="True"
+                               placeholder="Your client secret"
+                               help="Client Secret for access token generation (automatically encrypted)"/>
+                        <field name="vipps_credentials_encrypted" readonly="1" invisible="1"/>
+                        <div colspan="2" class="alert alert-success" role="alert" invisible="not vipps_credentials_encrypted">
+                            <i class="fa fa-lock" title="Encrypted"/> <strong>Security:</strong> Credentials are automatically encrypted and stored securely.
+                        </div>
+                    </group>
+
+                    <!-- Credential Validation -->
+                    <group string="Credential Validation" col="2" groups="base.group_system">
+                        <field name="vipps_credentials_validated" readonly="1"/>
+                        <button name="action_validate_vipps_credentials" 
+                                string="Validate Credentials" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="vipps_credentials_validated"/>
+                        <button name="action_validate_vipps_credentials" 
+                                string="Re-validate Credentials" 
+                                type="object" 
+                                class="btn-secondary"
+                                invisible="not vipps_credentials_validated"/>
+                        <button name="action_register_webhook" 
+                                string="Register Webhook" 
+                                type="object" 
+                                class="btn-info"
+                                help="Manually register webhook with Vipps"
+                                invisible="state != 'enabled'"/>
+                        <button name="action_check_webhook_status" 
+                                string="Check Webhook Status" 
+                                type="object" 
+                                class="btn-secondary"
+                                help="Check if webhook is registered with Vipps"
+                                invisible="state != 'enabled'"/>
+                        <field name="vipps_last_validation_error" 
+                               readonly="1" 
+                               colspan="2"
+                               invisible="not vipps_last_validation_error"/>
+                    </group>
+
+                    <!-- Feature Configuration -->
+                    <group string="Payment Configuration" col="2">
+                        <field name="vipps_capture_mode" 
+                               widget="radio" 
+                               options="{'no_create': True, 'no_open': True}"
+                               help="Manual capture is required for ecommerce compliance"/>
+                        <field name="vipps_collect_user_info" 
+                               help="Collect customer information during payment for improved profiles"/>
+                        <button name="action_configure_profile_scopes" 
+                                string="Configure Profile Collection" 
+                                type="object" 
+                                class="btn-secondary"
+                                invisible="not vipps_collect_user_info"/>
+                        <button name="action_create_payment_method" 
+                                string="Create Payment Method" 
+                                type="object" 
+                                class="btn-warning"
+                                help="Manually create and link the Vipps payment method"/>
+                    </group>
+
+                    <!-- Profile Collection Configuration -->
+                    <group string="Profile Information Collection" invisible="not vipps_collect_user_info">
+                        <field name="vipps_profile_scope" widget="radio"/>
+                        <field name="vipps_custom_scopes" 
+                               invisible="vipps_profile_scope != 'custom'" required="vipps_profile_scope == 'custom'"/>
+                        <field name="vipps_data_retention_days"/>
+                        <field name="vipps_auto_update_partners"/>
+                        <field name="vipps_require_consent"/>
+                        <div colspan="2" class="alert alert-info" role="alert">
+                            <strong>Privacy Notice:</strong> Collecting customer information requires compliance with GDPR and local privacy laws. 
+                            Ensure you have proper consent mechanisms and data protection policies in place.
+                        </div>
+                        <div colspan="2" class="alert alert-info" role="alert" invisible="vipps_capture_mode != 'manual'">
+                            <strong>Manual Capture:</strong> Payments will be authorized but not captured until you manually capture them or ship the order. This complies with legal requirements for ecommerce.
+                        </div>
+                        <div colspan="2" class="alert alert-warning" role="alert" invisible="vipps_capture_mode != 'automatic'">
+                            <strong>Automatic Capture:</strong> Payments will be immediately captured upon authorization. Only use this for Point of Sale transactions.
+                        </div>
+                    </group>
+
+                    <!-- Security Configuration -->
+                    <group string="Security &amp; Encryption" col="2" groups="base.group_system">
+                        <field name="vipps_credentials_encrypted" readonly="1"/>
+                        <div colspan="2" class="alert alert-success" role="status">
+                            <i class="fa fa-shield" title="Security" role="img" aria-label="Security icon"/> <strong>Credentials Encrypted:</strong> All sensitive data is automatically encrypted at rest.
+                        </div>
+                    </group>
+
+                    <!-- Webhook Configuration (Managed Automatically) -->
+                    <group string="Webhook Information" col="2" groups="base.group_system">
+                        <field name="vipps_webhook_url" 
+                               readonly="1"
+                               help="Webhook URL (automatically registered with Vipps when provider is enabled)"/>
+                        <field name="vipps_webhook_id" readonly="1" help="Webhook ID from Vipps API"/>
+                        <button name="action_register_webhook" 
+                                string="Register Webhook" 
+                                type="object" 
+                                class="btn-primary"
+                                help="Manually register webhook with Vipps"/>
+                        <button name="action_test_debug_logging" 
+                                string="Test Debug Logging" 
+                                type="object" 
+                                class="btn-secondary"
+                                invisible="vipps_environment != 'test'"
+                                help="Test debug logging functionality"/>
+                        <button name="action_test_webhook_flow" 
+                                string="Test Webhook Flow" 
+                                type="object" 
+                                class="btn-info"
+                                invisible="vipps_environment != 'test'"
+                                help="Test complete webhook registration flow as per Vipps documentation"/>
+                        <button name="action_list_webhooks" 
+                                string="List Webhooks" 
+                                type="object" 
+                                class="btn-secondary"
+                                help="List all registered webhooks via API"/>
+                        <div colspan="2" class="alert alert-info" role="alert">
+                            <strong>Automatic Webhook Management:</strong> Webhooks are automatically registered/unregistered 
+                            with Vipps when you enable/disable this provider. Use the button above for manual registration.
+                        </div>
+                    </group>
+
+                    <!-- Compliance & Monitoring -->
+                    <group string="Compliance &amp; Monitoring" col="2" groups="base.group_system">
+                        <field name="vipps_api_call_count" readonly="1"/>
+                        <field name="vipps_error_count" readonly="1"/>
+                        <field name="vipps_last_api_call" readonly="1"/>
+                        <!-- Compliance and API testing will be added in future version -->
+                    </group>
+
+                    <!-- Token Information (Read-only) -->
+                    <group string="Token Information" col="2" groups="base.group_system" 
+                           invisible="not vipps_access_token">
+                        <field name="vipps_access_token" invisible="1"/>
+                        <field name="vipps_token_expires_at" readonly="1"/>
+                        <div colspan="2" class="text-muted">
+                            Access tokens are automatically managed and refreshed as needed.
+                        </div>
+                    </group>
+
+                    <!-- Documentation Links -->
+                    <group string="Documentation &amp; Support" col="1">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Getting Started</h5>
+                                <ul class="list-unstyled">
+                                    <li><a href="https://developer.vipps.no/docs/APIs/epayment-api/" target="_blank">
+                                        <i class="fa fa-external-link"/> ePayment API Documentation</a></li>
+                                    <li><a href="https://developer.vipps.no/docs/developer-resources/portal/" target="_blank">
+                                        <i class="fa fa-external-link"/> Developer Portal</a></li>
+                                    <li><a href="https://developer.vippsmobilepay.com/docs/APIs/epayment-api/checklist/" target="_blank">
+                                        <i class="fa fa-external-link"/> Integration Checklist</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Test Environment</h5>
+                                <ul class="list-unstyled">
+                                    <li><a href="https://developer.vipps.no/docs/test-environment/" target="_blank">
+                                        <i class="fa fa-external-link"/> Test Environment Guide</a></li>
+                                    <li><a href="https://developer.vipps.no/docs/APIs/epayment-api/epayment-api-test-data/" target="_blank">
+                                        <i class="fa fa-external-link"/> Test Data</a></li>
+                                    <li><a href="https://developer.vippsmobilepay.com/docs/APIs/checkout-api/checkout-api-checklist/" target="_blank">
+                                        <i class="fa fa-external-link"/> Checkout Checklist</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Compliance Requirements -->
+                        <div class="alert alert-info" role="status">
+                            <h5><i class="fa fa-info-circle"/> Integration Requirements</h5>
+                            <p>This integration implements all requirements from the Vipps/MobilePay integration checklists:</p>
+                            <ul>
+                                <li>✅ Proper system identification headers</li>
+                                <li>✅ Idempotency key support for all POST requests</li>
+                                <li>✅ Webhook signature validation</li>
+                                <li>✅ Comprehensive error handling with trace IDs</li>
+                                <li>✅ Automatic token refresh and retry logic</li>
+                                <li>✅ Environment-specific endpoint handling</li>
+                                <li>✅ Secure credential storage and validation</li>
+                            </ul>
+                        </div>
+                    </group>
+
+                    <!-- Status Indicators -->
+                    <div class="alert alert-success" role="status" groups="base.group_system"
+                         invisible="code != 'vipps' or not vipps_credentials_validated or state == 'disabled'">
+                        <i class="fa fa-check-circle" title="Success" role="img" aria-label="Success icon"/> 
+                        <strong>Ready:</strong> Vipps/MobilePay is configured and ready to process payments.
+                    </div>
+                    
+                    <div class="alert alert-warning" role="alert" groups="base.group_system"
+                         invisible="code != 'vipps' or vipps_credentials_validated">
+                        <i class="fa fa-exclamation-triangle" title="Warning" role="img" aria-label="Warning icon"/> 
+                        <strong>Configuration Required:</strong> Please configure and validate your API credentials above.
+                    </div>
+
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>

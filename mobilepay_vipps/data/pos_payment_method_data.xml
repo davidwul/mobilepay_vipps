@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Default Vipps POS Payment Method -->
+        <record id="pos_payment_method_vipps" model="pos.payment.method">
+            <field name="name">Vipps/MobilePay</field>
+            <field name="use_payment_terminal">vipps</field>
+            <field name="vipps_enable_qr_flow">True</field>
+            <field name="vipps_enable_phone_flow">True</field>
+            <field name="vipps_enable_manual_flows">False</field>
+            <field name="vipps_payment_timeout">300</field>
+            <field name="vipps_polling_interval">2</field>
+        </record>
+
+    </data>
+</odoo>

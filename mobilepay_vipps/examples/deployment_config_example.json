@@ -1,0 +1,139 @@
+{
+  "_comment": "Deployment Configuration Example for Vipps/MobilePay Integration",
+  "_note": "Configure deployment settings for different environments",
+  
+  "environments": {
+    "development": {
+      "name": "Development Environment",
+      "odoo_path": "/opt/odoo/dev",
+      "addons_path": "/opt/odoo/dev/addons",
+      "database": "vipps_dev",
+      "url": "http://localhost:8069",
+      "auto_restart": true,
+      "backup_before_deploy": false,
+      "run_tests": true,
+      "config_file": "/etc/odoo/dev.conf"
+    },
+    "staging": {
+      "name": "Staging Environment", 
+      "odoo_path": "/opt/odoo/staging",
+      "addons_path": "/opt/odoo/staging/addons",
+      "database": "vipps_staging",
+      "url": "https://staging.your-domain.com",
+      "auto_restart": true,
+      "backup_before_deploy": true,
+      "run_tests": true,
+      "config_file": "/etc/odoo/staging.conf",
+      "ssl_cert": "/etc/ssl/certs/staging.crt",
+      "ssl_key": "/etc/ssl/private/staging.key"
+    },
+    "production": {
+      "name": "Production Environment",
+      "odoo_path": "/opt/odoo/production", 
+      "addons_path": "/opt/odoo/production/addons",
+      "database": "vipps_production",
+      "url": "https://your-domain.com",
+      "auto_restart": false,
+      "backup_before_deploy": true,
+      "run_tests": false,
+      "config_file": "/etc/odoo/production.conf",
+      "ssl_cert": "/etc/ssl/certs/production.crt",
+      "ssl_key": "/etc/ssl/private/production.key",
+      "load_balancer": "nginx",
+      "workers": 4,
+      "max_cron_threads": 2
+    }
+  },
+  
+  "build": {
+    "exclude_patterns": [
+      "*.pyc",
+      "__pycache__",
+      ".git*",
+      "*.log",
+      "*.tmp",
+      ".DS_Store",
+      "Thumbs.db",
+      "build/",
+      "dist/",
+      "release/",
+      "examples/",
+      "tests/",
+      ".kiro/",
+      ".vscode/"
+    ],
+    "include_tests": false,
+    "minify_assets": true,
+    "validate_before_build": true,
+    "compress_package": true,
+    "generate_checksums": true
+  },
+  
+  "deployment": {
+    "create_backup": true,
+    "backup_location": "/backup/odoo/",
+    "run_tests": true,
+    "update_module": true,
+    "restart_services": ["odoo", "nginx", "postgresql"],
+    "post_deploy_checks": true,
+    "rollback_on_failure": true,
+    "notification_email": "deploy@your-company.com",
+    "deployment_timeout": 600,
+    "health_check_timeout": 120
+  },
+  
+  "validation": {
+    "syntax_check": true,
+    "dependency_check": true,
+    "security_scan": true,
+    "performance_test": false,
+    "integration_test": true,
+    "smoke_test": true
+  },
+  
+  "countries": {
+    "norway": {
+      "enabled": true,
+      "payment_provider": "vipps",
+      "currency": "NOK",
+      "test_merchant_id": "123456",
+      "prod_merchant_id": "REPLACE_WITH_ACTUAL"
+    },
+    "denmark": {
+      "enabled": true,
+      "payment_provider": "mobilepay",
+      "currency": "DKK", 
+      "test_merchant_id": "DK_TEST_123",
+      "prod_merchant_id": "REPLACE_WITH_ACTUAL"
+    },
+    "finland": {
+      "enabled": true,
+      "payment_provider": "mobilepay",
+      "currency": "EUR",
+      "test_merchant_id": "FI_TEST_123", 
+      "prod_merchant_id": "REPLACE_WITH_ACTUAL"
+    },
+    "sweden": {
+      "enabled": true,
+      "payment_provider": "mobilepay",
+      "currency": "SEK",
+      "test_merchant_id": "SE_TEST_123",
+      "prod_merchant_id": "REPLACE_WITH_ACTUAL"
+    }
+  },
+  
+  "notifications": {
+    "slack": {
+      "enabled": false,
+      "webhook_url": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK",
+      "channel": "#deployments"
+    },
+    "email": {
+      "enabled": true,
+      "smtp_server": "smtp.your-company.com",
+      "smtp_port": 587,
+      "username": "deploy@your-company.com",
+      "recipients": ["dev-team@your-company.com"]
+    }
+  }
+}

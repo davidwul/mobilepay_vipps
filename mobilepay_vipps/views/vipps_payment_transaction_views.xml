@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_payment_transaction_form_vipps_ext" model="ir.ui.view">
+            <field name="name">payment.transaction.form.vipps.ext</field>
+            <field name="model">payment.transaction</field>
+            <field name="inherit_id" ref="payment.view_payment_transaction_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Vipps Information" attrs="{'invisible': [('provider_code', '!=', 'vipps')]}">
+                        <group>
+                            <group>
+                                <field name="vipps_payment_reference"/>
+                                <field name="vipps_psp_reference"/>
+                                <field name="vipps_payment_state"/>
+                                <field name="vipps_user_flow"/>
+                            </group>
+                            <group>
+                                <field name="vipps_redirect_url"/>
+                                <field name="vipps_last_status_check"/>
+                                <field name="vipps_webhook_received"/>
+                            </group>
+                        </group>
+                        <group>
+                            <button name="_get_payment_events" string="Refresh Payment Events" type="object" class="btn-link"/>
+                            <field name="vipps_payment_events" readonly="1"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

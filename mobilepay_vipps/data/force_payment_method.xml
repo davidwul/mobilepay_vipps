@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Force create/update payment method (noupdate="0" means always update) -->
+        <record id="payment_method_vipps_force" model="payment.method">
+            <field name="name">Vipps/MobilePay</field>
+            <field name="code">vipps</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

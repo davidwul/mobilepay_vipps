@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Minimal security groups for Vipps module -->
+        <!-- This file is required but kept minimal for basic installation -->
+        
+    </data>
+</odoo>

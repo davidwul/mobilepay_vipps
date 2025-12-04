@@ -1,0 +1,75 @@
+{
+  "odoo": {
+    "version": "17.0",
+    "database_url": "postgresql://odoo_user:password@localhost:5432/production_db",
+    "admin_password": "secure_admin_password",
+    "workers": 4,
+    "max_cron_threads": 2,
+    "data_dir": "/opt/odoo/data",
+    "log_level": "info",
+    "proxy_mode": true
+  },
+  "vipps": {
+    "environment": "production",
+    "base_url": "https://api.vipps.no",
+    "merchant_serial_number": "YOUR_MERCHANT_SERIAL",
+    "client_id": "YOUR_CLIENT_ID",
+    "subscription_key": "YOUR_SUBSCRIPTION_KEY",
+    "webhook_url": "https://your-domain.com/payment/vipps/webhook",
+    "webhook_secret": "your_webhook_secret_min_32_chars"
+  },
+  "infrastructure": {
+    "ssl_enabled": true,
+    "domain": "your-production-domain.com",
+    "load_balancer": false,
+    "cdn_enabled": false,
+    "backup_enabled": true,
+    "nginx_enabled": true,
+    "nginx_config": "/etc/nginx/sites-available/odoo"
+  },
+  "monitoring": {
+    "enabled": true,
+    "log_level": "INFO",
+    "metrics_enabled": true,
+    "alerting_enabled": true,
+    "log_retention_days": 30,
+    "monitoring_tools": [
+      "prometheus",
+      "grafana"
+    ]
+  },
+  "security": {
+    "firewall_enabled": true,
+    "intrusion_detection": true,
+    "vulnerability_scanning": true,
+    "penetration_testing": false,
+    "fail2ban_enabled": true,
+    "ssl_protocols": [
+      "TLSv1.2",
+      "TLSv1.3"
+    ]
+  },
+  "performance": {
+    "max_concurrent_users": 100,
+    "response_time_threshold": 2.0,
+    "memory_limit": "4GB",
+    "cpu_limit": "80%",
+    "database_connections": 100,
+    "worker_timeout": 120
+  },
+  "backup": {
+    "database_backup_frequency": "daily",
+    "file_backup_frequency": "daily",
+    "backup_retention_days": 30,
+    "offsite_backup": true,
+    "backup_encryption": true
+  },
+  "compliance": {
+    "gdpr_enabled": true,
+    "pci_dss_compliant": true,
+    "data_retention_days": 365,
+    "audit_logging": true,
+    "encryption_at_rest": true,
+    "encryption_in_transit": true
+  }
+}

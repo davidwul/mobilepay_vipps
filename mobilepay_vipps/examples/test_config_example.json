@@ -1,0 +1,122 @@
+{
+  "_comment": "Vipps/MobilePay Test Configuration Example",
+  "_note": "This configuration is for development and testing purposes only",
+  
+  "odoo": {
+    "version": "17.0",
+    "database_url": "postgresql://odoo:odoo@localhost:5432/test_db",
+    "admin_password": "admin",
+    "workers": 2,
+    "max_cron_threads": 1,
+    "data_dir": "/opt/odoo/test_data",
+    "log_level": "debug",
+    "proxy_mode": false,
+    "longpolling_port": 8072
+  },
+  
+  "vipps": {
+    "environment": "test",
+    "base_url": "https://apitest.vipps.no",
+    "merchant_serial_number": "123456",
+    "client_id": "test_client_id",
+    "client_secret": "test_client_secret", 
+    "subscription_key": "test_subscription_key",
+    "webhook_url": "https://test.your-domain.com/payment/vipps/webhook",
+    "webhook_secret": "test_webhook_secret_for_development_only"
+  },
+  
+  "mobilepay": {
+    "denmark": {
+      "environment": "sandbox",
+      "base_url": "https://sandbox-api.mobilepay.dk",
+      "merchant_id": "test_dk_merchant",
+      "client_id": "test_dk_client_id",
+      "client_secret": "test_dk_client_secret",
+      "subscription_key": "test_dk_subscription_key"
+    },
+    "finland": {
+      "environment": "sandbox",
+      "base_url": "https://sandbox-api.mobilepay.fi", 
+      "merchant_id": "test_fi_merchant",
+      "client_id": "test_fi_client_id",
+      "client_secret": "test_fi_client_secret",
+      "subscription_key": "test_fi_subscription_key"
+    },
+    "sweden": {
+      "environment": "sandbox",
+      "base_url": "https://sandbox-api.mobilepay.se",
+      "merchant_id": "test_se_merchant", 
+      "client_id": "test_se_client_id",
+      "client_secret": "test_se_client_secret",
+      "subscription_key": "test_se_subscription_key"
+    }
+  },
+  
+  "infrastructure": {
+    "ssl_enabled": false,
+    "domain": "localhost:8069",
+    "load_balancer": false,
+    "cdn_enabled": false,
+    "backup_enabled": false,
+    "nginx_enabled": false
+  },
+  
+  "monitoring": {
+    "enabled": true,
+    "log_level": "DEBUG",
+    "metrics_enabled": false,
+    "alerting_enabled": false,
+    "log_retention_days": 7,
+    "monitoring_tools": [],
+    "health_check_interval": 300
+  },
+  
+  "security": {
+    "firewall_enabled": false,
+    "intrusion_detection": false,
+    "vulnerability_scanning": false,
+    "penetration_testing": false,
+    "fail2ban_enabled": false,
+    "ssl_protocols": ["TLSv1.2"],
+    "security_headers": false
+  },
+  
+  "performance": {
+    "max_concurrent_users": 10,
+    "response_time_threshold": 5.0,
+    "memory_limit": "2GB",
+    "cpu_limit": "50%",
+    "database_connections": 20,
+    "worker_timeout": 60,
+    "cache_enabled": false,
+    "compression_enabled": false
+  },
+  
+  "backup": {
+    "database_backup_frequency": "never",
+    "file_backup_frequency": "never",
+    "backup_retention_days": 1,
+    "offsite_backup": false,
+    "backup_encryption": false
+  },
+  
+  "compliance": {
+    "gdpr_enabled": true,
+    "pci_dss_compliant": false,
+    "data_retention_days": 30,
+    "audit_logging": true,
+    "encryption_at_rest": false,
+    "encryption_in_transit": false,
+    "data_anonymization": false,
+    "consent_management": true
+  },
+  
+  "test_settings": {
+    "mock_payments": true,
+    "simulate_failures": true,
+    "test_webhooks": true,
+    "debug_mode": true,
+    "test_phone_numbers": ["+4712345678", "+4587654321", "+358401234567", "+46701234567"],
+    "test_amounts": [100, 250, 500, 1000, 2500]
+  }
+}

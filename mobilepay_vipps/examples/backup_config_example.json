@@ -1,0 +1,187 @@
+{
+  "_comment": "Backup Configuration Example for Vipps/MobilePay Integration",
+  "_note": "Comprehensive backup strategy for production environments",
+  
+  "backup_strategy": {
+    "database": {
+      "frequency": "daily",
+      "retention_days": 90,
+      "compression": true,
+      "encryption": true,
+      "backup_time": "02:00",
+      "backup_location": "/backup/database/",
+      "offsite_location": "s3://your-backup-bucket/database/",
+      "backup_format": "custom",
+      "parallel_jobs": 2
+    },
+    "filestore": {
+      "frequency": "daily",
+      "retention_days": 90,
+      "compression": true,
+      "encryption": true,
+      "backup_time": "03:00",
+      "backup_location": "/backup/filestore/",
+      "offsite_location": "s3://your-backup-bucket/filestore/",
+      "exclude_patterns": ["*.tmp", "*.log", "__pycache__"]
+    },
+    "configuration": {
+      "frequency": "weekly",
+      "retention_days": 365,
+      "backup_time": "04:00",
+      "backup_location": "/backup/config/",
+      "offsite_location": "s3://your-backup-bucket/config/",
+      "include_files": [
+        "/etc/odoo/",
+        "/etc/nginx/",
+        "/etc/ssl/",
+        "/opt/odoo/addons/payment_vipps_mobilepay/"
+      ]
+    }
+  },
+  
+  "backup_commands": {
+    "database_backup": {
+      "command": "pg_dump",
+      "options": [
+        "--host=localhost",
+        "--port=5432",
+        "--username=odoo",
+        "--format=custom",
+        "--compress=9",
+        "--verbose",
+        "--file=/backup/database/odoo_$(date +%Y%m%d_%H%M%S).backup"
+      ],
+      "environment": {
+        "PGPASSWORD": "your_db_password"
+      }
+    },
+    "filestore_backup": {
+      "command": "tar",
+      "options": [
+        "-czf",
+        "/backup/filestore/filestore_$(date +%Y%m%d_%H%M%S).tar.gz",
+        "-C /var/lib/odoo",
+        "filestore"
+      ]
+    },
+    "config_backup": {
+      "command": "tar",
+      "options": [
+        "-czf",
+        "/backup/config/config_$(date +%Y%m%d_%H%M%S).tar.gz",
+        "/etc/odoo",
+        "/etc/nginx/sites-available/odoo",
+        "/opt/odoo/addons/payment_vipps_mobilepay"
+      ]
+    }
+  },
+  
+  "encryption": {
+    "method": "gpg",
+    "key_id": "your-gpg-key-id",
+    "cipher_algo": "AES256",
+    "compress_algo": "ZLIB"
+  },
+  
+  "offsite_sync": {
+    "provider": "aws_s3",
+    "bucket": "your-backup-bucket",
+    "region": "eu-west-1",
+    "storage_class": "STANDARD_IA",
+    "lifecycle_policy": {
+      "transition_to_glacier": 30,
+      "delete_after": 2555
+    },
+    "sync_command": "aws s3 sync /backup/ s3://your-backup-bucket/ --storage-class STANDARD_IA --delete"
+  },
+  
+  "monitoring": {
+    "backup_success_check": {
+      "enabled": true,
+      "check_interval": "1h",
+      "alert_on_failure": true,
+      "alert_email": "backup-alerts@your-company.com"
+    },
+    "backup_size_monitoring": {
+      "enabled": true,
+      "size_threshold_gb": 50,
+      "growth_rate_threshold": 0.2
+    },
+    "backup_integrity_check": {
+      "enabled": true,
+      "frequency": "weekly",
+      "test_restore": true
+    }
+  },
+  
+  "restore_procedures": {
+    "database_restore": {
+      "steps": [
+        "Stop Odoo service",
+        "Drop existing database",
+        "Create new database",
+        "Restore from backup using pg_restore",
+        "Update database if needed",
+        "Start Odoo service"
+      ],
+      "command": "pg_restore --host=localhost --port=5432 --username=odoo --dbname=odoo_restored --verbose /backup/database/odoo_backup.backup"
+    },
+    "filestore_restore": {
+      "steps": [
+        "Stop Odoo service",
+        "Backup current filestore",
+        "Extract backup to filestore location",
+        "Set proper permissions",
+        "Start Odoo service"
+      ],
+      "command": "tar -xzf /backup/filestore/filestore_backup.tar.gz -C /var/lib/odoo/"
+    },
+    "full_system_restore": {
+      "estimated_time": "2-4 hours",
+      "prerequisites": [
+        "Fresh server installation",
+        "Odoo dependencies installed",
+        "Database server running",
+        "Backup files accessible"
+      ]
+    }
+  },
+  
+  "disaster_recovery": {
+    "rto": "4 hours",
+    "rpo": "24 hours",
+    "backup_locations": [
+      "Local storage",
+      "AWS S3",
+      "Secondary datacenter"
+    ],
+    "recovery_steps": [
+      "Assess damage and data loss",
+      "Provision new infrastructure if needed",
+      "Restore database from latest backup",
+      "Restore filestore from latest backup",
+      "Restore configuration files",
+      "Update DNS if needed",
+      "Test system functionality",
+      "Notify stakeholders"
+    ]
+  },
+  
+  "compliance": {
+    "gdpr": {
+      "data_retention_days": 2555,
+      "anonymization_after_retention": true,
+      "backup_encryption_required": true
+    },
+    "pci_dss": {
+      "secure_backup_storage": true,
+      "access_logging": true,
+      "regular_testing": true
+    },
+    "audit_requirements": {
+      "backup_logs_retention": 365,
+      "restore_test_frequency": "monthly",
+      "documentation_updates": "quarterly"
+    }
+  }
+}

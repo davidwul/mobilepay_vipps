@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Cron job for cleaning up expired user data -->
+        <record id="ir_cron_vipps_user_data_cleanup" model="ir.cron">
+            <field name="name">Vipps/MobilePay: Cleanup Expired User Data</field>
+            <field name="model_id" ref="model_payment_transaction"/>
+            <field name="state">code</field>
+            <field name="code">model._cleanup_expired_user_data()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Cron job for credential rotation checks -->
+        <record id="ir_cron_vipps_credential_rotation" model="ir.cron">
+            <field name="name">Vipps/MobilePay: Check Credential Rotation Schedule</field>
+            <field name="model_id" ref="model_vipps_credential_rotation"/>
+            <field name="state">code</field>
+            <field name="code">model.check_rotation_schedule()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Cron job for audit log cleanup -->
+        <record id="ir_cron_vipps_audit_log_cleanup" model="ir.cron">
+            <field name="name">Vipps/MobilePay: Cleanup Old Audit Logs</field>
+            <field name="model_id" ref="model_vipps_credential_audit_log"/>
+            <field name="state">code</field>
+            <field name="code">model.cleanup_old_logs()</field>
+            <field name="interval_number">7</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Cron job for webhook security log cleanup -->
+        <record id="ir_cron_vipps_webhook_security_log_cleanup" model="ir.cron">
+            <field name="name">Vipps/MobilePay: Cleanup Old Webhook Security Logs</field>
+            <field name="model_id" ref="model_vipps_webhook_security"/>
+            <field name="state">code</field>
+            <field name="code">model.cleanup_old_security_logs()</field>
+            <field name="interval_number">7</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Cron job for data retention policy enforcement -->
+        <record id="ir_cron_vipps_data_retention_enforcement" model="ir.cron">
+            <field name="name">Vipps/MobilePay: Enforce Data Retention Policies</field>
+            <field name="model_id" ref="model_vipps_data_retention_manager"/>
+            <field name="state">code</field>
+            <field name="code">
+                enforcement_report = model.enforce_data_retention_policies()
+                if enforcement_report:
+                    model.env['vipps.data.retention.log'].create_enforcement_log(enforcement_report)
+            </field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>
