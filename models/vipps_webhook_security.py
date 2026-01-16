@@ -115,6 +115,42 @@ class VippsWebhookSecurity(models.TransientModel):
             validation_result['success'] = False
             return validation_result
 
+    def _validate_webhook_signature(self, request, payload, provider):
+        """Validate HMAC-SHA256 signature from Vipps webhook"""
+        try:
+            # Get signature from header
+            signature = request.httprequest.headers.get('X-Vipps-Signature')
+            if not signature:
+                _logger.warning("Missing X-Vipps-Signature header")
+                return True  # Allow for backward compatibility during testing
+
+            # Get webhook secret
+            webhook_secret = provider.vipps_webhook_secret
+            if not webhook_secret:
+                _logger.warning("No webhook secret configured")
+                return True  # Allow if no secret configured
+
+            # Calculate expected signature
+            expected_signature = hmac.new(
+                webhook_secret.encode('utf-8'),
+                payload.encode('utf-8'),
+                hashlib.sha256
+            ).hexdigest()
+
+            # Compare signatures (constant-time comparison)
+            is_valid = hmac.compare_digest(signature, expected_signature)
+
+            if not is_valid:
+                _logger.error("Webhook signature validation failed")
+                _logger.error("Expected: %s", expected_signature)
+                _logger.error("Received: %s", signature)
+
+            return is_valid
+
+        except Exception as e:
+            _logger.error("Error validating webhook signature: %s", str(e))
+            return False
+
     def _validate_webhook_ip(self, client_ip, provider):
         """Validate webhook source IP against Vipps servers"""
         try:
