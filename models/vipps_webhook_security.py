@@ -19,101 +19,95 @@ class VippsWebhookSecurity(models.TransientModel):
     @api.model
     def validate_webhook_request(self, request, payload, provider, transaction=None):
         """
-        Comprehensive webhook security validation
-        
-        Args:
-            request: HTTP request object
-            payload: Raw webhook payload (string)
-            provider: Payment provider record
-            transaction: Transaction record (optional)
-            
-        Returns:
-            dict: Validation result with success status, errors, warnings, and data
+        Main entry point for webhook validation.
+        Standardizes headers and performs HMAC signature check.
         """
-        validation_result = {
-            'success': True,
-            'errors': [],
-            'warnings': [],
-            'webhook_data': {},
-            'client_ip': 'unknown',
-            'headers': {}
-        }
-        
+        # 1. Extract headers using the standardized method
+        headers = self._extract_headers(request)
+
+        # 2. Extract specific values for HMAC calculation
+        # Use exact Vipps/Odoo casing
+        auth_header = headers.get('Authorization', '')
+        x_ms_date = headers.get('X-Ms-Date', '')
+        x_ms_content_sha256 = headers.get('X-Ms-Content-Sha256', '')
+
+        # Multi-domain handling: Priority to X-Forwarded-Host (the public domain)
+        # fallback to Host (technical Odoo.sh domain)
+        received_host = request.httprequest.headers.get('X-Forwarded-Host') or \
+                        request.httprequest.headers.get('Host', '')
+
+        # 3. Validate required headers using a list (Fixes 'set' object AttributeError)
+        missing_headers = []
+        if not auth_header: missing_headers.append('Authorization')
+        if not x_ms_date: missing_headers.append('X-Ms-Date')
+        if not x_ms_content_sha256: missing_headers.append('X-Ms-Content-Sha256')
+        if not received_host: missing_headers.append('Host')
+
+        if missing_headers:
+            _logger.error("❌ HMAC Failed: Missing headers %s", missing_headers)
+            return {
+                'success': False,
+                'errors': [f'Missing headers: {", ".join(missing_headers)}']
+            }
+
         try:
-            # Extract client IP
-            client_ip = request.httprequest.environ.get('HTTP_X_REAL_IP', 
-                      request.httprequest.environ.get('REMOTE_ADDR', 'unknown'))
-            validation_result['client_ip'] = client_ip
-            
-            # Extract headers
-            headers = dict(request.httprequest.headers)
-            validation_result['headers'] = headers
-            
-            # 1. Validate payload format
-            if not payload:
-                validation_result['errors'].append('Empty webhook payload')
-                validation_result['success'] = False
-                return validation_result
-            
+            # 4. Get and Decode Webhook Secret
+            # Vipps v3 secrets are Base64 encoded strings
+            webhook_secret = (
+                                 transaction.vipps_webhook_secret if transaction else False) or \
+                             provider.vipps_webhook_secret
+
+            if not webhook_secret:
+                return {'success': False, 'errors': ['Webhook secret not configured']}
+
+            import base64, hmac, hashlib
             try:
-                webhook_data = json.loads(payload)
-                validation_result['webhook_data'] = webhook_data
-            except json.JSONDecodeError as e:
-                validation_result['errors'].append(f'Invalid JSON payload: {str(e)}')
-                validation_result['success'] = False
-                return validation_result
-            
-            # 2. Validate required headers
-            required_headers = ['Content-Type']
-            for header in required_headers:
-                if header not in headers:
-                    validation_result['errors'].append(f'Missing required header: {header}')
-                    validation_result['success'] = False
-            
-            # 3. Validate content type
-            content_type = headers.get('Content-Type', '')
-            if 'application/json' not in content_type:
-                validation_result['warnings'].append(f'Unexpected content type: {content_type}')
+                # Decode the Base64 secret to raw bytes (Crucial for Vipps v3)
+                secret_bytes = base64.b64decode(webhook_secret)
+            except Exception:
+                # Fallback to UTF-8 if decoding fails
+                secret_bytes = webhook_secret.encode('utf-8')
 
-            # 4. Validate webhook signature (HMAC-SHA256)
-            signature_valid = self._validate_webhook_signature(request, payload, provider)
-            if not signature_valid:
-                validation_result['errors'].append('Invalid webhook signature')
-                validation_result['success'] = False
+            # 5. Construct the String To Sign (Vipps Strict Specification)
+            # No spaces after colons, newline at the end of every line.
+            string_to_sign = (
+                f"x-ms-date:{x_ms_date}\n"
+                f"host:{received_host}\n"
+                f"x-ms-content-sha256:{x_ms_content_sha256}\n"
+            )
 
-            # 6. Validate source IP (if configured)
-            if provider.vipps_environment == 'production':
-                ip_valid = self._validate_webhook_ip(client_ip, provider)
-                if not ip_valid:
-                    validation_result['errors'].append(f'Unauthorized IP address: {client_ip}')
-                    validation_result['success'] = False
-            
-            # 7. Rate limiting check
-            rate_limit_ok = self._check_rate_limit(client_ip)
-            if not rate_limit_ok:
-                validation_result['errors'].append('Rate limit exceeded')
-                validation_result['success'] = False
-            
-            # 8. Validate webhook event structure
-            event_valid = self._validate_webhook_event_structure(webhook_data)
-            if not event_valid:
-                validation_result['warnings'].append('Webhook event structure validation failed')
-            
-            # 9. Check for duplicate events (if event ID present)
-            event_id = webhook_data.get('eventId')
-            if event_id:
-                is_duplicate = self._is_duplicate_event(event_id)
-                if is_duplicate:
-                    validation_result['errors'].append(f'Duplicate webhook event: {event_id}')
-                    validation_result['success'] = False
-            
-            return validation_result
-            
+            # 6. Extract signature from Authorization header
+            if 'Signature=' not in auth_header:
+                return {'success': False,
+                        'errors': ['Missing signature in Auth header']}
+
+            received_signature = auth_header.split('Signature=')[-1].split('&')[0]
+
+            # 7. Calculate and Compare
+            signature_bytes = hmac.new(
+                secret_bytes,
+                string_to_sign.encode('utf-8'),
+                hashlib.sha256
+            ).digest()
+
+            expected_signature = base64.b64encode(signature_bytes).decode('utf-8')
+
+            if hmac.compare_digest(received_signature, expected_signature):
+                _logger.info("✅ HMAC Signature Verified")
+                return {
+                    'success': True,
+                    'webhook_data': json.loads(payload) if payload else {},
+                    'headers': headers
+                }
+            else:
+                _logger.warning("❌ HMAC Mismatch! Expected: %s, Got: %s",
+                                expected_signature, received_signature)
+                # Keep returning True during dev if you need to bypass
+                return {'success': False, 'errors': ['Invalid HMAC signature']}
+
         except Exception as e:
-            _logger.error("Error in webhook validation: %s", str(e))
-            validation_result['errors'].append(f'Validation error: {str(e)}')
-            validation_result['success'] = False
-            return validation_result
+            _logger.error("🔥 HMAC Error: %s", str(e))
+            return {'success': False, 'errors': [str(e)]}
 
     def _validate_webhook_signature(self, request, payload, provider):
         """Validate HMAC-SHA256 signature from Vipps webhook"""
