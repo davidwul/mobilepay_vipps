@@ -235,12 +235,12 @@ class PaymentTransaction(models.Model):
             
         return f"{base_url}/payment/vipps/return?reference={self.vipps_payment_reference or self.reference}"
 
-    def _process_notification_data(self, notification_data):
+    def _handle_notification_data(self, notification_data):
         """Process notification data from Vipps/MobilePay webhook - Odoo 17 method"""
         self.ensure_one()
         
         if self.provider_code != 'vipps':
-            return super()._process_notification_data(notification_data)
+            return super()._handle_notification_data(notification_data)
         
         try:
             # Extract event type from 'name' field and map to payment state

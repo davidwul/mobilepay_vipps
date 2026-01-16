@@ -671,7 +671,7 @@ class PaymentProvider(models.Model):
         if self.code in ('vipps', 'mobilepay'):
             # Reuse Odoo's core MobilePay payment method code
             if 'mobile_pay' not in codes:
-                codes.append('mobile_pay')
+                codes.add('mobile_pay')
         return codes
 
     def _get_vipps_api_url(self):

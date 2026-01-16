@@ -421,7 +421,7 @@ class TestPaymentFlowCompliance(TransactionCase):
         
         # 2. Payment Flow
         self.assertTrue(hasattr(transaction, '_send_payment_request'))
-        self.assertTrue(hasattr(transaction, '_process_notification_data'))
+        self.assertTrue(hasattr(transaction, '_handle_notification_data'))
         
         # 3. Webhooks
         self.assertTrue(hasattr(transaction, '_is_webhook_event_processed'))

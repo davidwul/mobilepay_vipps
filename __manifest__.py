@@ -10,7 +10,7 @@ Vipps/MobilePay Payment Integration
 ===================================
 
 This module provides comprehensive integration with Vipps (Norway) and MobilePay (Denmark/Finland/Sweden) 
-payment services for Odoo 17.0+, supporting both eCommerce and Point of Sale (POS) transactions.
+payment services for Odoo 18.0+, supporting both eCommerce and Point of Sale (POS) transactions.
 
 Key Features:
 -------------
@@ -49,7 +49,7 @@ Technical Features:
 
 Requirements:
 -------------
-* Odoo 17.0+
+* Odoo 18.0+
 * PostgreSQL database
 * Valid Vipps/MobilePay merchant account
 * SSL certificate for webhook endpoints

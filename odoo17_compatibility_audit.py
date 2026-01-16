@@ -122,9 +122,9 @@ class Odoo17CompatibilityAuditor:
             return
         
         method_names = self._find_function_names(tree)
-        if "_process_notification_data" not in method_names:
+        if "_handle_notification_data" not in method_names:
             self.issues.append(
-                "Missing _process_notification_data method in "
+                "Missing _handle_notification_data method in "
                 "payment_transaction.py (required for Odoo 17)"
             )
         
@@ -169,11 +169,11 @@ class Odoo17CompatibilityAuditor:
             "env['payment.transaction']" in content or
             "request.env['payment.transaction']" in content
         )
-        references_process = "_process_notification_data" in content
+        references_process = "_handle_notification_data" in content
         if not (uses_tx_model and references_process):
             self.issues.append(
                 "Webhook controller should delegate to "
-                "payment.transaction._process_notification_data"
+                "payment.transaction._handle_notification_data"
             )
     
     # ----------------------
