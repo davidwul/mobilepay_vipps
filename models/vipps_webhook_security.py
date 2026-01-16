@@ -75,6 +75,12 @@ class VippsWebhookSecurity(models.TransientModel):
             if 'application/json' not in content_type:
                 validation_result['warnings'].append(f'Unexpected content type: {content_type}')
 
+            # 4. Validate webhook signature (HMAC-SHA256)
+            signature_valid = self._validate_webhook_signature(request, payload, provider)
+            if not signature_valid:
+                validation_result['errors'].append('Invalid webhook signature')
+                validation_result['success'] = False
+
             # 6. Validate source IP (if configured)
             if provider.vipps_environment == 'production':
                 ip_valid = self._validate_webhook_ip(client_ip, provider)
