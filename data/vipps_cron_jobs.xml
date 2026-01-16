@@ -10,10 +10,8 @@
             <field name="code">model._cancel_expired_payments()</field>
             <field name="interval_number">5</field>
             <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field>
             <field name="active">True</field>
             <field name="user_id" ref="base.user_root"/>
-            <field name="doall">False</field>
         </record>
 
         <!-- Cron job to cleanup old webhook events (weekly) -->
@@ -52,10 +50,8 @@ if deleted_count > 0:
             </field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
-            <field name="numbercall">-1</field>
             <field name="active">True</field>
             <field name="user_id" ref="base.user_root"/>
-            <field name="doall">False</field>
         </record>
 
     </data>
