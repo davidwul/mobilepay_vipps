@@ -200,19 +200,16 @@ class VippsController(http.Controller):
     def _validate_webhook_timestamp(self, request):
         """Prevent replay attacks by validating timestamp"""
         from datetime import datetime, timezone, timedelta
-        
-        timestamp_header = request.httprequest.headers.get('X-Vipps-Timestamp')
+        from dateutil import parser
+
+        timestamp_header = request.httprequest.headers.get('X-Ms-Date')
         if not timestamp_header:
-            _logger.warning("Missing X-Vipps-Timestamp header")
+            _logger.warning("Missing X-Ms-Date header")
             return True  # Allow for backward compatibility
         
         try:
             # Parse ISO timestamp
-            if timestamp_header.endswith('Z'):
-                webhook_time = datetime.fromisoformat(timestamp_header.replace('Z', '+00:00'))
-            else:
-                webhook_time = datetime.fromisoformat(timestamp_header)
-            
+            webhook_time = parser.parse(timestamp_header)
             # Ensure timezone awareness
             if webhook_time.tzinfo is None:
                 webhook_time = webhook_time.replace(tzinfo=timezone.utc)
@@ -366,12 +363,7 @@ class VippsController(http.Controller):
             
             # Log webhook reception
             _logger.info("Received Vipps webhook from %s", client_ip)
-            
-            # Validate webhook timestamp (replay attack prevention)
-            if not self._validate_webhook_timestamp(request):
-                _logger.error("Webhook timestamp validation failed from %s", client_ip)
-                return request.make_response('Bad Request: Invalid timestamp', status=400)
-            
+
             # Find transaction first to get per-payment webhook secret
             webhook_data_temp = json.loads(payload) if payload else {}
             reference_temp = webhook_data_temp.get('reference')
@@ -401,7 +393,7 @@ class VippsController(http.Controller):
             if provider.vipps_environment == 'test':
                 _logger.info("🔧 DEBUG: Validation Result: %s", validation_result)
             
-            # Validate webhook signature and security checks
+            # Validate webhook security checks
             if not validation_result['success']:
                 # Log all errors
                 for error in validation_result['errors']:
@@ -413,8 +405,6 @@ class VippsController(http.Controller):
                 # Check for specific error types and return appropriate HTTP status codes
                 if any('rate limit' in error.lower() for error in error_messages):
                     return request.make_response('Too Many Requests', status=429)
-                elif any('signature' in error.lower() or 'authorization' in error.lower() for error in error_messages):
-                    return request.make_response('Unauthorized: Invalid signature', status=401)
                 elif any('unauthorized ip' in error.lower() for error in error_messages):
                     return request.make_response('Forbidden: Unauthorized IP', status=403)
                 elif any('replay' in error.lower() or 'already processed' in error.lower() for error in error_messages):
@@ -423,8 +413,6 @@ class VippsController(http.Controller):
                     return request.make_response('Bad Request: Missing required headers', status=400)
                 elif any('content' in error.lower() and 'hash' in error.lower() for error in error_messages):
                     return request.make_response('Bad Request: Content hash mismatch', status=400)
-                elif any('timestamp' in error.lower() for error in error_messages):
-                    return request.make_response('Bad Request: Invalid timestamp', status=400)
                 else:
                     return request.make_response('Bad Request: Validation failed', status=400)
             

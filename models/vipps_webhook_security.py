@@ -74,19 +74,7 @@ class VippsWebhookSecurity(models.TransientModel):
             content_type = headers.get('Content-Type', '')
             if 'application/json' not in content_type:
                 validation_result['warnings'].append(f'Unexpected content type: {content_type}')
-            
-            # 4. Validate webhook signature (HMAC-SHA256)
-            signature_valid = self._validate_webhook_signature(request, payload, provider)
-            if not signature_valid:
-                validation_result['errors'].append('Invalid webhook signature')
-                validation_result['success'] = False
-            
-            # 5. Validate timestamp (replay attack prevention)
-            timestamp_valid = self._validate_webhook_timestamp(request)
-            if not timestamp_valid:
-                validation_result['errors'].append('Invalid or expired timestamp')
-                validation_result['success'] = False
-            
+
             # 6. Validate source IP (if configured)
             if provider.vipps_environment == 'production':
                 ip_valid = self._validate_webhook_ip(client_ip, provider)
@@ -120,80 +108,6 @@ class VippsWebhookSecurity(models.TransientModel):
             validation_result['errors'].append(f'Validation error: {str(e)}')
             validation_result['success'] = False
             return validation_result
-
-    def _validate_webhook_signature(self, request, payload, provider):
-        """Validate HMAC-SHA256 signature from Vipps webhook"""
-        try:
-            # Get signature from header
-            signature = request.httprequest.headers.get('X-Vipps-Signature')
-            if not signature:
-                _logger.warning("Missing X-Vipps-Signature header")
-                return True  # Allow for backward compatibility during testing
-            
-            # Get webhook secret
-            webhook_secret = provider.vipps_webhook_secret
-            if not webhook_secret:
-                _logger.warning("No webhook secret configured")
-                return True  # Allow if no secret configured
-            
-            # Calculate expected signature
-            expected_signature = hmac.new(
-                webhook_secret.encode('utf-8'),
-                payload.encode('utf-8'),
-                hashlib.sha256
-            ).hexdigest()
-            
-            # Compare signatures (constant-time comparison)
-            is_valid = hmac.compare_digest(signature, expected_signature)
-            
-            if not is_valid:
-                _logger.error("Webhook signature validation failed")
-                _logger.error("Expected: %s", expected_signature)
-                _logger.error("Received: %s", signature)
-            
-            return is_valid
-            
-        except Exception as e:
-            _logger.error("Error validating webhook signature: %s", str(e))
-            return False
-
-    def _validate_webhook_timestamp(self, request):
-        """Validate webhook timestamp to prevent replay attacks"""
-        try:
-            timestamp_header = request.httprequest.headers.get('X-Vipps-Timestamp')
-            if not timestamp_header:
-                _logger.debug("Missing X-Vipps-Timestamp header")
-                return True  # Allow for backward compatibility
-            
-            # Parse ISO timestamp
-            if timestamp_header.endswith('Z'):
-                webhook_time = datetime.fromisoformat(timestamp_header.replace('Z', '+00:00'))
-            else:
-                webhook_time = datetime.fromisoformat(timestamp_header)
-            
-            # Ensure timezone awareness
-            if webhook_time.tzinfo is None:
-                webhook_time = webhook_time.replace(tzinfo=timezone.utc)
-            
-            current_time = datetime.now(timezone.utc)
-            time_diff = abs((current_time - webhook_time).total_seconds())
-            
-            # Reject webhooks older than 5 minutes (300 seconds)
-            if time_diff > 300:
-                _logger.error("Webhook timestamp too old: %s seconds", time_diff)
-                return False
-            
-            # Reject webhooks from the future (more than 1 minute)
-            if (webhook_time - current_time).total_seconds() > 60:
-                _logger.error("Webhook timestamp from future: %s seconds ahead", 
-                            (webhook_time - current_time).total_seconds())
-                return False
-            
-            return True
-            
-        except (ValueError, AttributeError) as e:
-            _logger.error("Invalid timestamp format: %s", str(e))
-            return False
 
     def _validate_webhook_ip(self, client_ip, provider):
         """Validate webhook source IP against Vipps servers"""

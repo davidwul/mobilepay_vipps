@@ -20,33 +20,33 @@
             <field name="model_id" ref="base.model_ir_config_parameter"/>
             <field name="state">code</field>
             <field name="code">
-# Cleanup webhook events older than 30 days
-from datetime import datetime, timedelta
-import json
+<!--# Cleanup webhook events older than 30 days-->
+<!--from datetime import datetime, timedelta-->
+<!--import json-->
 
-cutoff_time = datetime.now() - timedelta(days=30)
-cutoff_timestamp = int(cutoff_time.timestamp())
+<!--cutoff_time = datetime.now() - timedelta(days=30)-->
+<!--cutoff_timestamp = int(cutoff_time.timestamp())-->
 
-# Find old webhook event parameters
-old_events = env['ir.config_parameter'].search([
-    ('key', 'like', 'vipps.webhook.event.%')
-])
+<!--# Find old webhook event parameters-->
+<!--old_events = env['ir.config_parameter'].search([-->
+<!--    ('key', 'like', 'vipps.webhook.event.%')-->
+<!--])-->
 
-deleted_count = 0
-for param in old_events:
-    try:
-        event_data = json.loads(param.value)
-        processed_at = datetime.fromisoformat(event_data.get('processed_at', ''))
-        if processed_at &lt; cutoff_time:
-            param.unlink()
-            deleted_count += 1
-    except:
-        # Delete malformed entries
-        param.unlink()
-        deleted_count += 1
+<!--deleted_count = 0-->
+<!--for param in old_events:-->
+<!--    try:-->
+<!--        event_data = json.loads(param.value)-->
+<!--        processed_at = datetime.fromisoformat(event_data.get('processed_at', ''))-->
+<!--        if processed_at &lt; cutoff_time:-->
+<!--            param.unlink()-->
+<!--            deleted_count += 1-->
+<!--    except:-->
+<!--        # Delete malformed entries-->
+<!--        param.unlink()-->
+<!--        deleted_count += 1-->
 
-if deleted_count > 0:
-    env.cr.commit()
+<!--if deleted_count > 0:-->
+<!--    env.cr.commit()-->
             </field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
